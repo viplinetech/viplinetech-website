@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Vipline Technologies</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #07090F;
+      --bg-2: #0D1120;
+      --bg-card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --text: #EEF2FF;
+      --text-2: #7A8BA8;
+      --accent: #0066FF;
+      --cyan: #00D4FF;
+      --gold: #FFB800;
+      --red: #EF4444;
+      --green: #22C55E;
+      --sidebar-w: 256px;
+      --radius: 12px;
+      --transition: 0.25s ease;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    input, select, textarea { font-family: inherit; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--bg-2);
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: transform var(--transition);
+    }
+    .sidebar-logo {
+      padding: 24px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sidebar-logo .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #0066FF, #00D4FF);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; color: #fff;
+    }
+    .sidebar-logo span { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .sidebar-logo small { display: block; font-size: 0.65rem; color: var(--text-2); }
+
+    .sidebar-nav { flex: 1; padding: 20px 12px; display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+    .nav-label { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-2); padding: 0 8px; margin: 12px 0 6px; }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-2);
+      transition: all var(--transition);
+      position: relative;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+    .sidebar-link.active { background: rgba(0,102,255,0.15); color: var(--cyan); }
+    .sidebar-link.active::before {
+      content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 3px; height: 20px; background: linear-gradient(#0066FF, #00D4FF); border-radius: 99px;
+    }
+    .sidebar-link i { width: 18px; text-align: center; font-size: 0.9rem; }
+    .badge { margin-left: auto; background: var(--red); color: #fff; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 99px; }
+
+    .sidebar-footer {
+      padding: 16px 12px;
+      border-top: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .sidebar-user {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: var(--bg-card);
+    }
+    .user-avatar {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #0066FF, #00D4FF);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: #fff;
+    }
+    .user-info small { display: block; font-size: 0.65rem; color: var(--text-2); }
+    .user-info span { font-size: 0.8rem; font-weight: 600; }
+    .btn-logout {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 9px; background: rgba(239,68,68,0.1); color: #EF4444;
+      border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+      border: 1px solid rgba(239,68,68,0.2);
+      transition: background var(--transition);
+      width: 100%;
+    }
+    .btn-logout:hover { background: rgba(239,68,68,0.2); }
+
+    /* MAIN CONTENT */
+    .main-content {
+      margin-left: var(--sidebar-w);
+      flex: 1; display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: var(--bg-2);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar-title h1 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 700; }
+    .topbar-title p { font-size: 0.78rem; color: var(--text-2); margin-top: 2px; }
+    .topbar-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 18px;
+      background: linear-gradient(135deg, #0066FF, #00D4FF);
+      color: #fff; border-radius: 8px; font-size: 0.825rem; font-weight: 600;
+      transition: opacity var(--transition), transform var(--transition);
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 18px;
+      background: transparent; color: var(--text-2);
+      border: 1px solid var(--border); border-radius: 8px;
+      font-size: 0.825rem; font-weight: 500;
+      transition: all var(--transition); cursor: pointer;
+    }
+    .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* CONTENT AREA */
+    .content { padding: 32px; flex: 1; }
+
+    /* PANELS */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* STATS GRID */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      transition: border-color var(--transition);
+      position: relative; overflow: hidden;
+    }
+    .stat-card:hover { border-color: rgba(0,102,255,0.3); }
+    .stat-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .stat-card.blue::after { background: linear-gradient(90deg, #0066FF, #00D4FF); }
+    .stat-card.gold::after { background: linear-gradient(90deg, #FFB800, #FF8C00); }
+    .stat-card.green::after { background: linear-gradient(90deg, #22C55E, #16A34A); }
+    .stat-card.purple::after { background: linear-gradient(90deg, #7C3AED, #4F46E5); }
+    .stat-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 16px; }
+    .stat-card.blue .stat-icon { background: rgba(0,102,255,0.15); color: var(--accent); }
+    .stat-card.gold .stat-icon { background: rgba(255,184,0,0.15); color: var(--gold); }
+    .stat-card.green .stat-icon { background: rgba(34,197,94,0.15); color: var(--green); }
+    .stat-card.purple .stat-icon { background: rgba(124,58,237,0.15); color: #7C3AED; }
+    .stat-value { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 0.8rem; color: var(--text-2); }
+
+    /* TABLE */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-header h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; }
+    .card-header p { font-size: 0.78rem; color: var(--text-2); margin-top: 2px; }
+    .card-body { padding: 24px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; font-size: 0.72rem; font-weight: 600;
+      color: var(--text-2); letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0 12px 12px; border-bottom: 1px solid var(--border);
+    }
+    td { padding: 14px 12px; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 99px; font-size: 0.72rem; font-weight: 600;
+    }
+    .status-badge.active { background: rgba(34,197,94,0.12); color: #22C55E; }
+    .status-badge.inactive { background: rgba(239,68,68,0.12); color: #EF4444; }
+    .status-badge.unread { background: rgba(255,184,0,0.12); color: var(--gold); }
+    .status-badge.read { background: rgba(255,255,255,0.06); color: var(--text-2); }
+
+    .action-btns { display: flex; gap: 8px; }
+    .action-btn {
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem;
+      transition: all var(--transition);
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      cursor: pointer; background: none;
+    }
+    .action-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+    .action-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+    /* FORM STYLES */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 0.78rem; font-weight: 600; color: var(--text-2); }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color var(--transition);
+      resize: vertical;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,102,255,0.12);
+    }
+    .form-group select option { background: #0D1120; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      z-index: 1000; display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+      opacity: 0; pointer-events: none; transition: opacity var(--transition);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--bg-2); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+      width: 100%; max-width: 580px;
+      max-height: 90vh; overflow-y: auto;
+      transform: translateY(20px); transition: transform var(--transition);
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .modal-header h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+    .modal-close { width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.06); color: var(--text-2); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; font-size: 1rem; transition: all var(--transition); }
+    .modal-close:hover { background: rgba(239,68,68,0.15); color: var(--red); }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+
+    /* ALERTS */
+    .alert {
+      padding: 12px 16px; border-radius: 8px; font-size: 0.85rem;
+      margin-bottom: 20px; display: none;
+    }
+    .alert.show { display: flex; align-items: center; gap: 10px; }
+    .alert.success { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: var(--green); }
+    .alert.error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+
+    /* SETTINGS TABS */
+    .settings-tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
+    .settings-tab { padding: 10px 20px; font-size: 0.85rem; font-weight: 500; color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all var(--transition); }
+    .settings-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+    /* MESSAGE PREVIEW */
+    .message-preview { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 16px; margin-top: 16px; }
+    .message-preview p { font-size: 0.875rem; color: var(--text-2); line-height: 1.7; white-space: pre-wrap; }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-2); }
+    .empty-state i { font-size: 2.5rem; margin-bottom: 16px; opacity: 0.4; }
+    .empty-state p { font-size: 0.9rem; }
+
+    /* Loading */
+    .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--cyan); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <svg width="34" height="34" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="al" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0066FF"/>
+          <stop offset="100%" stop-color="#00D4FF"/>
+        </linearGradient>
+      </defs>
+      <rect width="52" height="52" rx="13" fill="url(#al)"/>
+      <polyline points="12,14 26,41 40,14" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="26" cy="41.5" r="3.2" fill="white" opacity="0.92"/>
+    </svg>
+    <div>
+      <span>ViplineTech</span>
+      <small>Admin Panel</small>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Overview</div>
+    <a class="sidebar-link active" data-panel="dashboard" href="#">
+      <i class="fas fa-th-large"></i> Dashboard
+    </a>
+
+    <div class="nav-label">Website Content</div>
+    <a class="sidebar-link" data-panel="services" href="#">
+      <i class="fas fa-cogs"></i> Services
+    </a>
+    <a class="sidebar-link" data-panel="portfolio" href="#">
+      <i class="fas fa-briefcase"></i> Portfolio
+    </a>
+    <a class="sidebar-link" data-panel="testimonials" href="#">
+      <i class="fas fa-star"></i> Testimonials
+    </a>
+    <a class="sidebar-link" data-panel="team" href="#">
+      <i class="fas fa-users"></i> Team Members
+    </a>
+
+    <div class="nav-label">Inquiries</div>
+    <a class="sidebar-link" data-panel="messages" href="#">
+      <i class="fas fa-envelope"></i> Messages
+      <span class="badge" id="msgBadge" style="display:none">0</span>
+    </a>
+
+    <div class="nav-label">Configuration</div>
+    <a class="sidebar-link" data-panel="settings" href="#">
+      <i class="fas fa-sliders-h"></i> Site Settings
+    </a>
+    <a class="sidebar-link" data-panel="account" href="#">
+      <i class="fas fa-shield-alt"></i> Account & Security
+    </a>
+
+    <div style="margin-top:auto; padding-top:20px;">
+      <a class="sidebar-link" href="/" target="_blank">
+        <i class="fas fa-external-link-alt"></i> View Website
+      </a>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">A</div>
+      <div class="user-info">
+        <span>Administrator</span>
+        <small>viplinetech@gmail.com</small>
+      </div>
+    </div>
+    <button class="btn-logout" id="logoutBtn">
+      <i class="fas fa-sign-out-alt"></i> Sign Out
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main-content">
+  <header class="topbar">
+    <div class="topbar-title">
+      <h1 id="panelTitle">Dashboard</h1>
+      <p id="panelSub">Welcome back — here's what's happening</p>
+    </div>
+    <div class="topbar-actions">
+      <a href="/" target="_blank" class="btn-outline"><i class="fas fa-eye"></i> View Site</a>
+      <button class="btn-primary" id="topActionBtn" style="display:none"></button>
+    </div>
+  </header>
+
+  <div class="content">
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card blue">
+          <div class="stat-icon"><i class="fas fa-cogs"></i></div>
+          <div class="stat-value" id="statServices">—</div>
+          <div class="stat-label">Active Services</div>
+        </div>
+        <div class="stat-card gold">
+          <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+          <div class="stat-value" id="statPortfolio">—</div>
+          <div class="stat-label">Portfolio Items</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon"><i class="fas fa-envelope"></i></div>
+          <div class="stat-value" id="statMessages">—</div>
+          <div class="stat-label">Total Messages</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-icon"><i class="fas fa-bell"></i></div>
+          <div class="stat-value" id="statUnread">—</div>
+          <div class="stat-label">Unread Messages</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3>Recent Messages</h3>
+            <p>Latest inquiries from your website visitors</p>
+          </div>
+          <button class="btn-outline" onclick="showPanel('messages')">View All</button>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th><th>Email</th><th>Subject</th><th>Date</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recentMessagesTable">
+              <tr><td colspan="5" style="text-align:center;color:var(--text-2);padding:40px">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="panel" id="panel-services">
+      <div id="alertServices" class="alert"></div>
+      <div class="card">
+        <div class="card-header">
+          <div><h3>Services</h3><p>Manage your offered services</p></div>
+          <button class="btn-primary" onclick="openServiceModal()"><i class="fas fa-plus"></i> Add Service</button>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead><tr><th>Icon</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="servicesTable"><tr><td colspan="5" style="text-align:center;color:var(--text-2);padding:40px">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PORTFOLIO -->
+    <div class="panel" id="panel-portfolio">
+      <div id="alertPortfolio" class="alert"></div>
+      <div class="card">
+        <div class="card-header">
+          <div><h3>Portfolio</h3><p>Manage your work showcase</p></div>
+          <button class="btn-primary" onclick="openPortfolioModal()"><i class="fas fa-plus"></i> Add Project</button>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead><tr><th>Title</th><th>Category</th><th>Link</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="portfolioTable"><tr><td colspan="5" style="text-align:center;color:var(--text-2);padding:40px">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="panel" id="panel-testimonials">
+      <div id="alertTestimonials" class="alert"></div>
+      <div class="card">
+        <div class="card-header">
+          <div><h3>Testimonials</h3><p>Manage client reviews</p></div>
+          <button class="btn-primary" onclick="openTestimonialModal()"><i class="fas fa-plus"></i> Add Testimonial</button>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead><tr><th>Name</th><th>Company</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="testimonialsTable"><tr><td colspan="5" style="text-align:center;color:var(--text-2);padding:40px">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM -->
+    <div class="panel" id="panel-team">
+      <div id="alertTeam" class="alert"></div>
+      <div class="card">
+        <div class="card-header">
+          <div><h3>Team Members</h3><p>Manage your team showcase</p></div>
+          <button class="btn-primary" onclick="openTeamModal()"><i class="fas fa-plus"></i> Add Member</button>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="teamTable"><tr><td colspan="4" style="text-align:center;color:var(--text-2);padding:40px">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="panel" id="panel-messages">
+      <div class="card">
+        <div class="card-header">
+          <div><h3>Messages</h3><p>All contact form submissions</p></div>
+          <button class="btn-outline" onclick="loadMessages()"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div class="card-body">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>WhatsApp</th><th>Subject</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="messagesTable"><tr><td colspan="7" style="text-align:center;color:var(--text-2);padding:40px">Loading...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div id="alertSettings" class="alert"></div>
+      <div class="settings-tabs">
+        <div class="settings-tab active" data-stab="general">General</div>
+        <div class="settings-tab" data-stab="contact">Contact</div>
+        <div class="settings-tab" data-stab="social">Social</div>
+        <div class="settings-tab" data-stab="seo">SEO & Title</div>
+        <div class="settings-tab" data-stab="stats">Stats</div>
+        <div class="settings-tab" data-stab="why">Why Us</div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <form id="settingsForm" novalidate>
+            <div id="stab-general" class="form-grid">
+              <div class="form-group full"><label>Company / Brand Name (Navbar & Footer)</label><input name="company_name" type="text" /></div>
+              <div class="form-group full"><label>Logo Tagline (below name in navbar)</label><input name="tagline" type="text" /></div>
+              <div class="form-group full"><label>Footer Tagline (description under logo)</label><textarea name="footer_tagline" rows="2"></textarea></div>
+
+              <div class="form-group full" style="grid-column:1/-1;background:rgba(0,102,255,0.06);border:1px solid rgba(0,102,255,0.15);border-radius:10px;padding:16px 20px;margin-top:4px;">
+                <p style="font-size:0.78rem;font-weight:600;color:var(--cyan);margin-bottom:14px;letter-spacing:0.05em;text-transform:uppercase;">Logo & Favicon</p>
+                <p style="font-size:0.78rem;color:var(--text-2);margin-bottom:16px;line-height:1.6;">Upload your logo images to any image host (e.g. <a href="https://imgur.com" target="_blank" style="color:var(--cyan)">imgur.com</a>, <a href="https://cloudinary.com" target="_blank" style="color:var(--cyan)">Cloudinary</a>, or your own server) and paste the direct image URL below. Use transparent PNG or SVG for best results.</p>
+                <div class="form-grid" style="gap:16px">
+                  <div class="form-group">
+                    <label>🌙 Dark Mode Logo URL <span style="color:var(--text-2);font-weight:400">(shown on dark background)</span></label>
+                    <input name="logo_dark_url" type="url" placeholder="https://example.com/logo-white.svg" />
+                    <small style="color:var(--text-2);font-size:0.72rem;margin-top:4px;display:block">Use white/light coloured logo. Recommended: SVG or PNG with transparent background.</small>
+                  </div>
+                  <div class="form-group">
+                    <label>☀️ Light Mode Logo URL <span style="color:var(--text-2);font-weight:400">(shown on light background)</span></label>
+                    <input name="logo_light_url" type="url" placeholder="https://example.com/logo-dark.svg" />
+                    <small style="color:var(--text-2);font-size:0.72rem;margin-top:4px;display:block">Use dark/navy coloured logo. Recommended: SVG or PNG with transparent background.</small>
+                  </div>
+                  <div class="form-group">
+                    <label>⭐ Favicon URL <span style="color:var(--text-2);font-weight:400">(browser tab icon)</span></label>
+                    <input name="favicon_url" type="url" placeholder="https://example.com/favicon.svg" />
+                    <small style="color:var(--text-2);font-size:0.72rem;margin-top:4px;display:block">Recommended: 32×32 SVG or PNG. Shows in browser tab and bookmarks.</small>
+                  </div>
+                  <div id="logoPreviewBox" style="display:flex;gap:20px;align-items:center;padding:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;flex-wrap:wrap">
+                    <div style="text-align:center">
+                      <div style="background:#07090F;padding:12px 20px;border-radius:6px;margin-bottom:6px;min-width:120px;min-height:40px;display:flex;align-items:center;justify-content:center" id="darkLogoPreview"><span style="font-size:0.72rem;color:#ffffff30">No dark logo set</span></div>
+                      <span style="font-size:0.7rem;color:var(--text-2)">Dark mode preview</span>
+                    </div>
+                    <div style="text-align:center">
+                      <div style="background:#F0F5FF;padding:12px 20px;border-radius:6px;margin-bottom:6px;min-width:120px;min-height:40px;display:flex;align-items:center;justify-content:center" id="lightLogoPreview"><span style="font-size:0.72rem;color:#00000030">No light logo set</span></div>
+                      <span style="font-size:0.7rem;color:var(--text-2)">Light mode preview</span>
+                    </div>
+                    <div style="text-align:center">
+                      <div style="background:#333;padding:8px;border-radius:6px;margin-bottom:6px;width:48px;height:48px;display:flex;align-items:center;justify-content:center" id="faviconPreview"><span style="font-size:0.6rem;color:#ffffff30">—</span></div>
+                      <span style="font-size:0.7rem;color:var(--text-2)">Favicon preview</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group full"><label>Marquee Ticker Items (comma separated)</label><textarea name="marquee_items" rows="2" placeholder="Software Development, App Development, Web Design"></textarea></div>
+              <div class="form-group full"><label>About Text</label><textarea name="about_text" rows="5"></textarea></div>
+            </div>
+
+            <div id="stab-contact" class="form-grid" style="display:none">
+              <div class="form-group"><label>Phone Number</label><input name="phone" type="text" /></div>
+              <div class="form-group"><label>Email Address</label><input name="email" type="email" /></div>
+              <div class="form-group full"><label>Office Address</label><textarea name="address" rows="3"></textarea></div>
+              <div class="form-group"><label>RC Number</label><input name="rc_number" type="text" /></div>
+              <div class="form-group"><label>WhatsApp Number</label><input name="whatsapp" type="text" /></div>
+            </div>
+
+            <div id="stab-social" class="form-grid" style="display:none">
+              <div class="form-group"><label>Facebook URL</label><input name="facebook" type="url" /></div>
+              <div class="form-group"><label>Twitter / X URL</label><input name="twitter" type="url" /></div>
+              <div class="form-group"><label>Instagram URL</label><input name="instagram" type="url" /></div>
+              <div class="form-group"><label>LinkedIn URL</label><input name="linkedin" type="url" /></div>
+            </div>
+
+            <div id="stab-seo" class="form-grid" style="display:none">
+              <div class="form-group full"><label>Page Title (browser tab & Google)</label><input name="seo_title" type="text" /></div>
+              <div class="form-group full"><label>Meta Description (Google snippet — keep under 160 chars)</label><textarea name="seo_description" rows="3"></textarea></div>
+            </div>
+
+            <div id="stab-stats" class="form-grid" style="display:none">
+              <div class="form-group"><label>Stat 1 — Number</label><input name="stat_1_number" type="number" /></div>
+              <div class="form-group"><label>Stat 1 — Suffix (e.g. + or %)</label><input name="stat_1_suffix" type="text" /></div>
+              <div class="form-group full"><label>Stat 1 — Label</label><input name="stat_1_label" type="text" /></div>
+              <div class="form-group"><label>Stat 2 — Number</label><input name="stat_2_number" type="number" /></div>
+              <div class="form-group"><label>Stat 2 — Suffix</label><input name="stat_2_suffix" type="text" /></div>
+              <div class="form-group full"><label>Stat 2 — Label</label><input name="stat_2_label" type="text" /></div>
+              <div class="form-group"><label>Stat 3 — Number</label><input name="stat_3_number" type="number" /></div>
+              <div class="form-group"><label>Stat 3 — Suffix</label><input name="stat_3_suffix" type="text" /></div>
+              <div class="form-group full"><label>Stat 3 — Label</label><input name="stat_3_label" type="text" /></div>
+              <div class="form-group"><label>Stat 4 — Number</label><input name="stat_4_number" type="number" /></div>
+              <div class="form-group"><label>Stat 4 — Suffix</label><input name="stat_4_suffix" type="text" /></div>
+              <div class="form-group full"><label>Stat 4 — Label</label><input name="stat_4_label" type="text" /></div>
+            </div>
+
+            <div id="stab-why" class="form-grid" style="display:none">
+              <div class="form-group full"><label>Section Title</label><input name="why_title" type="text" /></div>
+              <div class="form-group full"><label>Section Subtitle</label><textarea name="why_subtitle" rows="2"></textarea></div>
+              <div class="form-group"><label>Point 1 — Number</label><input name="why_point_1_num" type="text" /></div>
+              <div class="form-group"><label>Point 1 — Title</label><input name="why_point_1_title" type="text" /></div>
+              <div class="form-group full"><label>Point 1 — Description</label><textarea name="why_point_1_desc" rows="2"></textarea></div>
+              <div class="form-group"><label>Point 2 — Number</label><input name="why_point_2_num" type="text" /></div>
+              <div class="form-group"><label>Point 2 — Title</label><input name="why_point_2_title" type="text" /></div>
+              <div class="form-group full"><label>Point 2 — Description</label><textarea name="why_point_2_desc" rows="2"></textarea></div>
+              <div class="form-group"><label>Point 3 — Number</label><input name="why_point_3_num" type="text" /></div>
+              <div class="form-group"><label>Point 3 — Title</label><input name="why_point_3_title" type="text" /></div>
+              <div class="form-group full"><label>Point 3 — Description</label><textarea name="why_point_3_desc" rows="2"></textarea></div>
+            </div>
+
+            <div style="margin-top:24px;display:flex;justify-content:flex-end;">
+              <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Settings</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="panel" id="panel-account">
+      <div id="alertAccount" class="alert"></div>
+      <div class="card" style="max-width:500px">
+        <div class="card-header"><div><h3>Change Password</h3><p>Update your admin password</p></div></div>
+        <div class="card-body">
+          <form id="passwordForm" class="form-grid">
+            <div class="form-group full"><label>Current Password</label><input type="password" id="currentPassword" required /></div>
+            <div class="form-group full"><label>New Password</label><input type="password" id="newPassword" required minlength="8" /></div>
+            <div class="form-group full"><label>Confirm New Password</label><input type="password" id="confirmPassword" required /></div>
+            <div style="grid-column:1/-1;display:flex;justify-content:flex-end;">
+              <button type="submit" class="btn-primary"><i class="fas fa-lock"></i> Update Password</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ── MODALS ── -->
+
+<!-- Service Modal -->
+<div class="modal-overlay" id="serviceModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="serviceModalTitle">Add Service</h3>
+      <button class="modal-close" onclick="closeModal('serviceModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="serviceForm" class="form-grid">
+      <input type="hidden" id="serviceId" />
+      <div class="form-group full"><label>Title *</label><input type="text" id="serviceTitle" required /></div>
+      <div class="form-group"><label>Icon Class</label><input type="text" id="serviceIcon" placeholder="fas fa-code" /></div>
+      <div class="form-group"><label>Order</label><input type="number" id="serviceOrder" value="0" /></div>
+      <div class="form-group full"><label>Description *</label><textarea id="serviceDesc" rows="4" required></textarea></div>
+      <div class="form-group"><label>Status</label><select id="serviceActive"><option value="1">Active</option><option value="0">Inactive</option></select></div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('serviceModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveService()"><i class="fas fa-save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Portfolio Modal -->
+<div class="modal-overlay" id="portfolioModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="portfolioModalTitle">Add Project</h3>
+      <button class="modal-close" onclick="closeModal('portfolioModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="portfolioForm" class="form-grid">
+      <input type="hidden" id="portfolioId" />
+      <input type="hidden" id="portfolioImageData" />
+      <div class="form-group full"><label>Title *</label><input type="text" id="portfolioTitle" required /></div>
+      <div class="form-group">
+        <label>Category</label>
+        <select id="portfolioCategory">
+          <option>Web Design</option><option>Software</option><option>App Development</option><option>Ecommerce</option><option>Product Design</option><option>General</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Order</label><input type="number" id="portfolioOrder" value="0" /></div>
+      <div class="form-group full"><label>Description *</label><textarea id="portfolioDesc" rows="4" required></textarea></div>
+      <div class="form-group full"><label>Live Project Link</label><input type="url" id="portfolioLink" placeholder="https://" /></div>
+
+      <!-- Image upload section -->
+      <div class="form-group full" style="grid-column:1/-1">
+        <label>Project Image</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
+          <!-- Option A: Upload from device -->
+          <div style="border:1px solid var(--border);border-radius:10px;padding:16px;background:rgba(255,255,255,0.02)">
+            <p style="font-size:0.75rem;color:var(--text-2);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em">Upload from Device</p>
+            <label for="portfolioImageFile" style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px;border:2px dashed var(--border);border-radius:8px;cursor:pointer;transition:border-color 0.2s" id="imageDropZone">
+              <i class="fas fa-cloud-upload-alt" style="font-size:1.8rem;color:var(--cyan)"></i>
+              <span style="font-size:0.78rem;color:var(--text-2);text-align:center">Click to upload or drag & drop<br><span style="color:var(--text-2);opacity:0.6">PNG, JPG, WEBP — max 2MB</span></span>
+            </label>
+            <input type="file" id="portfolioImageFile" accept="image/*" style="display:none" />
+          </div>
+          <!-- Option B: Paste URL -->
+          <div style="border:1px solid var(--border);border-radius:10px;padding:16px;background:rgba(255,255,255,0.02)">
+            <p style="font-size:0.75rem;color:var(--text-2);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em">Or Paste Image URL</p>
+            <input type="url" id="portfolioImageUrl" placeholder="https://example.com/image.jpg" style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.85rem;outline:none" />
+            <p style="font-size:0.72rem;color:var(--text-2);margin-top:8px">Use Cloudinary, Imgur or any direct image link</p>
+          </div>
+        </div>
+        <!-- Preview -->
+        <div id="imagePreviewWrap" style="margin-top:12px;display:none">
+          <p style="font-size:0.75rem;color:var(--text-2);margin-bottom:8px;font-weight:600">Preview</p>
+          <div style="position:relative;display:inline-block">
+            <img id="portfolioImagePreview" src="" alt="Preview" style="max-height:160px;max-width:100%;border-radius:8px;border:1px solid var(--border);display:block" />
+            <button type="button" onclick="clearPortfolioImage()" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;background:#EF4444;border:none;border-radius:50%;color:white;font-size:0.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group"><label>Status</label><select id="portfolioActive"><option value="1">Active</option><option value="0">Inactive</option></select></div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('portfolioModal')">Cancel</button>
+      <button class="btn-primary" onclick="savePortfolio()"><i class="fas fa-save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Testimonial Modal -->
+<div class="modal-overlay" id="testimonialModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="testimonialModalTitle">Add Testimonial</h3>
+      <button class="modal-close" onclick="closeModal('testimonialModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <form class="form-grid">
+      <input type="hidden" id="testimonialId" />
+      <div class="form-group"><label>Client Name *</label><input type="text" id="testimonialName" required /></div>
+      <div class="form-group"><label>Company</label><input type="text" id="testimonialCompany" /></div>
+      <div class="form-group"><label>Role</label><input type="text" id="testimonialRole" /></div>
+      <div class="form-group"><label>Rating</label>
+        <select id="testimonialRating"><option value="5">5 Stars ★★★★★</option><option value="4">4 Stars ★★★★</option><option value="3">3 Stars ★★★</option></select>
+      </div>
+      <div class="form-group full"><label>Review *</label><textarea id="testimonialContent" rows="5" required></textarea></div>
+      <div class="form-group"><label>Status</label><select id="testimonialActive"><option value="1">Active</option><option value="0">Inactive</option></select></div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('testimonialModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveTestimonial()"><i class="fas fa-save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Team Modal -->
+<div class="modal-overlay" id="teamModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="teamModalTitle">Add Team Member</h3>
+      <button class="modal-close" onclick="closeModal('teamModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <form class="form-grid">
+      <input type="hidden" id="teamId" />
+      <div class="form-group"><label>Full Name *</label><input type="text" id="teamName" required /></div>
+      <div class="form-group"><label>Role/Position *</label><input type="text" id="teamRole" required /></div>
+      <div class="form-group full"><label>Bio</label><textarea id="teamBio" rows="3"></textarea></div>
+      <div class="form-group"><label>LinkedIn URL</label><input type="url" id="teamLinkedin" /></div>
+      <div class="form-group"><label>Twitter URL</label><input type="url" id="teamTwitter" /></div>
+      <div class="form-group"><label>Order</label><input type="number" id="teamOrder" value="0" /></div>
+      <div class="form-group"><label>Status</label><select id="teamActive"><option value="1">Active</option><option value="0">Inactive</option></select></div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('teamModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveTeam()"><i class="fas fa-save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Message View Modal -->
+<div class="modal-overlay" id="messageModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Message Details</h3>
+      <button class="modal-close" onclick="closeModal('messageModal')"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="messageDetails"></div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal('messageModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── API HELPER ─────────────────────────────────
+async function api(method, url, data) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (data) opts.body = JSON.stringify(data);
+  const res = await fetch('/api' + url, opts);
+  if (res.status === 401) { window.location.href = '/admin/login.html'; return; }
+  return res.json();
+}
+
+// ── PANEL NAVIGATION ──────────────────────────
+const titles = {
+  dashboard: ['Dashboard', 'Overview of your website content'],
+  services: ['Services', 'Manage the services you offer'],
+  portfolio: ['Portfolio', 'Manage your work showcase'],
+  testimonials: ['Testimonials', 'Client reviews and feedback'],
+  team: ['Team Members', 'Manage your team showcase'],
+  messages: ['Messages', 'Contact form submissions'],
+  settings: ['Site Settings', 'Configure your website content'],
+  account: ['Account & Security', 'Manage your admin credentials']
+};
+
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('panel-' + name)?.classList.add('active');
+  document.querySelector(`[data-panel="${name}"]`)?.classList.add('active');
+  document.getElementById('panelTitle').textContent = titles[name]?.[0] || name;
+  document.getElementById('panelSub').textContent = titles[name]?.[1] || '';
+
+  const loaders = { services: loadServices, portfolio: loadPortfolio, testimonials: loadTestimonials, team: loadTeam, messages: loadMessages, settings: loadSettings };
+  loaders[name]?.();
+}
+
+document.querySelectorAll('.sidebar-link[data-panel]').forEach(link => {
+  link.addEventListener('click', e => { e.preventDefault(); showPanel(link.dataset.panel); });
+});
+
+// ── MODAL HELPERS ─────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+// ── ALERT ─────────────────────────────────────
+// ── GLOBAL TOAST ──────────────────────────────
+function showToast(type, msg) {
+  let toast = document.getElementById('globalToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'globalToast';
+    toast.style.cssText = `
+      position:fixed;top:24px;right:24px;z-index:9999;
+      padding:14px 20px;border-radius:10px;font-size:0.875rem;font-weight:500;
+      display:flex;align-items:center;gap:10px;
+      max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.4);
+      transition:all 0.3s ease;transform:translateY(-10px);opacity:0;
+    `;
+    document.body.appendChild(toast);
+  }
+  const isSuccess = type === 'success';
+  toast.style.background   = isSuccess ? 'rgba(34,197,94,0.15)'  : 'rgba(239,68,68,0.15)';
+  toast.style.border       = isSuccess ? '1px solid rgba(34,197,94,0.4)' : '1px solid rgba(239,68,68,0.4)';
+  toast.style.color        = isSuccess ? '#22C55E' : '#EF4444';
+  toast.innerHTML = `<i class="fas fa-${isSuccess ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateY(0)';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-10px)';
+  }, 4000);
+}
+
+function showAlert(id, type, msg) {
+  // Show local alert if element exists
+  const el = document.getElementById(id);
+  if (el) {
+    el.className = 'alert ' + type + ' show';
+    el.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${msg}`;
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    setTimeout(() => { el.className = 'alert'; }, 4000);
+  }
+  // Always show global toast too
+  showToast(type, msg);
+}
+
+// ── FORMAT DATE ───────────────────────────────
+function fmtDate(d) { return d ? new Date(d).toLocaleDateString('en-NG', {day:'numeric',month:'short',year:'numeric'}) : '—'; }
+
+// ── DASHBOARD ────────────────────────────────
+async function loadDashboard() {
+  const r = await api('GET', '/admin/stats');
+  if (!r) return;
+  document.getElementById('statServices').textContent = r.services ?? '—';
+  document.getElementById('statPortfolio').textContent = r.portfolio ?? '—';
+  document.getElementById('statMessages').textContent = r.messages ?? '—';
+  document.getElementById('statUnread').textContent = r.unread ?? '—';
+  const badge = document.getElementById('msgBadge');
+  if (r.unread > 0) { badge.textContent = r.unread; badge.style.display = ''; }
+
+  const tbody = document.getElementById('recentMessagesTable');
+  if (r.recentMessages && r.recentMessages.length) {
+    tbody.innerHTML = r.recentMessages.map(m => `
+      <tr>
+        <td>${esc(m.name)}</td>
+        <td>${esc(m.email)}</td>
+        <td>${esc(m.subject || '—')}</td>
+        <td>${fmtDate(m.created_at)}</td>
+        <td><span class="status-badge ${m.read ? 'read' : 'unread'}">${m.read ? 'Read' : 'New'}</span></td>
+      </tr>`).join('');
+  } else {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-2);padding:40px">No messages yet</td></tr>';
+  }
+}
+
+// ── SERVICES ─────────────────────────────────
+async function loadServices() {
+  const r = await api('GET', '/admin/services');
+  if (!r) return;
+  const tbody = document.getElementById('servicesTable');
+  if (!r.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-2);padding:40px">No services yet</td></tr>'; return; }
+  tbody.innerHTML = r.map(s => `
+    <tr>
+      <td><i class="${esc(s.icon)}" style="color:var(--cyan)"></i></td>
+      <td><strong>${esc(s.title)}</strong><br><small style="color:var(--text-2)">${esc(s.description.substring(0,60))}...</small></td>
+      <td>${s.order_index}</td>
+      <td><span class="status-badge ${s.active ? 'active' : 'inactive'}">${s.active ? 'Active' : 'Inactive'}</span></td>
+      <td><div class="action-btns">
+        <button class="action-btn" onclick='editService(${JSON.stringify(s)})'><i class="fas fa-edit"></i></button>
+        <button class="action-btn danger" onclick="deleteItem('services',${s.id})"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openServiceModal(s) {
+  document.getElementById('serviceModalTitle').textContent = s ? 'Edit Service' : 'Add Service';
+  document.getElementById('serviceId').value = s?.id || '';
+  document.getElementById('serviceTitle').value = s?.title || '';
+  document.getElementById('serviceIcon').value = s?.icon || 'fas fa-cog';
+  document.getElementById('serviceOrder').value = s?.order_index ?? 0;
+  document.getElementById('serviceDesc').value = s?.description || '';
+  document.getElementById('serviceActive').value = s?.active ?? 1;
+  openModal('serviceModal');
+}
+function editService(s) { openServiceModal(s); }
+
+async function saveService() {
+  const id = document.getElementById('serviceId').value;
+  const data = {
+    title: document.getElementById('serviceTitle').value,
+    icon: document.getElementById('serviceIcon').value,
+    order_index: +document.getElementById('serviceOrder').value,
+    description: document.getElementById('serviceDesc').value,
+    active: +document.getElementById('serviceActive').value
+  };
+  const r = id ? await api('PUT', '/admin/services/' + id, data) : await api('POST', '/admin/services', data);
+  if (r?.success) { closeModal('serviceModal'); loadServices(); showAlert('alertServices','success', id ? 'Service updated!' : 'Service added!'); }
+  else showAlert('alertServices', 'error', r?.message || 'Error saving service');
+}
+
+// ── PORTFOLIO ────────────────────────────────
+async function loadPortfolio() {
+  const r = await api('GET', '/admin/portfolio');
+  if (!r) return;
+  const tbody = document.getElementById('portfolioTable');
+  if (!r.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-2);padding:40px">No projects yet</td></tr>'; return; }
+  tbody.innerHTML = r.map(p => `
+    <tr>
+      <td><strong>${esc(p.title)}</strong></td>
+      <td>${esc(p.category)}</td>
+      <td>${p.link ? `<a href="${esc(p.link)}" target="_blank" style="color:var(--cyan)">${esc(p.link.substring(0,30))}...</a>` : '—'}</td>
+      <td><span class="status-badge ${p.active ? 'active' : 'inactive'}">${p.active ? 'Active' : 'Inactive'}</span></td>
+      <td><div class="action-btns">
+        <button class="action-btn" onclick='editPortfolio(${JSON.stringify(p)})'><i class="fas fa-edit"></i></button>
+        <button class="action-btn danger" onclick="deleteItem('portfolio',${p.id})"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openPortfolioModal(p) {
+  document.getElementById('portfolioModalTitle').textContent = p ? 'Edit Project' : 'Add Project';
+  document.getElementById('portfolioId').value = p?.id || '';
+  document.getElementById('portfolioImageData').value = p?.image_url || '';
+  document.getElementById('portfolioTitle').value = p?.title || '';
+  document.getElementById('portfolioCategory').value = p?.category || 'General';
+  document.getElementById('portfolioOrder').value = p?.order_index ?? 0;
+  document.getElementById('portfolioDesc').value = p?.description || '';
+  document.getElementById('portfolioLink').value = p?.link || '';
+  document.getElementById('portfolioActive').value = p?.active ?? 1;
+  document.getElementById('portfolioImageUrl').value = '';
+  // Show existing image if any
+  if (p?.image_url) {
+    showImagePreview(p.image_url);
+  } else {
+    clearPortfolioImage();
+  }
+  openModal('portfolioModal');
+}
+function editPortfolio(p) { openPortfolioModal(p); }
+
+// Image preview helpers
+function showImagePreview(src) {
+  const img = document.getElementById('portfolioImagePreview');
+  const wrap = document.getElementById('imagePreviewWrap');
+  if (img && wrap) { img.src = src; wrap.style.display = 'block'; }
+}
+function clearPortfolioImage() {
+  const imgData = document.getElementById('portfolioImageData');
+  const imgUrl  = document.getElementById('portfolioImageUrl');
+  const imgFile = document.getElementById('portfolioImageFile');
+  const wrap    = document.getElementById('imagePreviewWrap');
+  if (imgData) imgData.value = '';
+  if (imgUrl)  imgUrl.value  = '';
+  if (imgFile) imgFile.value = '';
+  if (wrap)    wrap.style.display = 'none';
+}
+
+// File upload → base64
+document.getElementById('portfolioImageFile')?.addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { alert('Image must be under 2MB'); this.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('portfolioImageData').value = e.target.result;
+    showImagePreview(e.target.result);
+  };
+  reader.readAsDataURL(file);
+});
+
+// Drag & drop
+const dropZone = document.getElementById('imageDropZone');
+dropZone?.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--cyan)'; });
+dropZone?.addEventListener('dragleave', () => { dropZone.style.borderColor = 'var(--border)'; });
+dropZone?.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.style.borderColor = 'var(--border)';
+  const file = e.dataTransfer.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  if (file.size > 2 * 1024 * 1024) { alert('Image must be under 2MB'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('portfolioImageData').value = ev.target.result;
+    showImagePreview(ev.target.result);
+  };
+  reader.readAsDataURL(file);
+});
+
+// URL paste → preview
+document.getElementById('portfolioImageUrl')?.addEventListener('blur', function() {
+  const url = this.value.trim();
+  if (url) {
+    document.getElementById('portfolioImageData').value = url;
+    showImagePreview(url);
+  }
+});
+
+async function savePortfolio() {
+  const id = document.getElementById('portfolioId').value;
+  const imageData = document.getElementById('portfolioImageData').value;
+  const data = {
+    title: document.getElementById('portfolioTitle').value,
+    category: document.getElementById('portfolioCategory').value,
+    order_index: +document.getElementById('portfolioOrder').value,
+    description: document.getElementById('portfolioDesc').value,
+    link: document.getElementById('portfolioLink').value,
+    image_url: imageData || null,
+    active: +document.getElementById('portfolioActive').value
+  };
+  const r = id ? await api('PUT', '/admin/portfolio/' + id, data) : await api('POST', '/admin/portfolio', data);
+  if (r?.success) { closeModal('portfolioModal'); loadPortfolio(); showAlert('alertPortfolio','success', id ? 'Project updated!' : 'Project added!'); }
+  else showAlert('alertPortfolio', 'error', r?.message || 'Error saving project');
+}
+
+// ── TESTIMONIALS ──────────────────────────────
+async function loadTestimonials() {
+  const r = await api('GET', '/admin/testimonials');
+  if (!r) return;
+  const tbody = document.getElementById('testimonialsTable');
+  if (!r.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-2);padding:40px">No testimonials yet</td></tr>'; return; }
+  tbody.innerHTML = r.map(t => `
+    <tr>
+      <td><strong>${esc(t.name)}</strong></td>
+      <td>${esc(t.company || '—')} ${t.role ? `<small style="color:var(--text-2)">· ${esc(t.role)}</small>` : ''}</td>
+      <td>${'★'.repeat(t.rating || 5)}</td>
+      <td><span class="status-badge ${t.active ? 'active' : 'inactive'}">${t.active ? 'Active' : 'Inactive'}</span></td>
+      <td><div class="action-btns">
+        <button class="action-btn" onclick='editTestimonial(${JSON.stringify(t)})'><i class="fas fa-edit"></i></button>
+        <button class="action-btn danger" onclick="deleteItem('testimonials',${t.id})"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openTestimonialModal(t) {
+  document.getElementById('testimonialModalTitle').textContent = t ? 'Edit Testimonial' : 'Add Testimonial';
+  document.getElementById('testimonialId').value = t?.id || '';
+  document.getElementById('testimonialName').value = t?.name || '';
+  document.getElementById('testimonialCompany').value = t?.company || '';
+  document.getElementById('testimonialRole').value = t?.role || '';
+  document.getElementById('testimonialRating').value = t?.rating ?? 5;
+  document.getElementById('testimonialContent').value = t?.content || '';
+  document.getElementById('testimonialActive').value = t?.active ?? 1;
+  openModal('testimonialModal');
+}
+function editTestimonial(t) { openTestimonialModal(t); }
+
+async function saveTestimonial() {
+  const id = document.getElementById('testimonialId').value;
+  const data = {
+    name: document.getElementById('testimonialName').value,
+    company: document.getElementById('testimonialCompany').value,
+    role: document.getElementById('testimonialRole').value,
+    rating: +document.getElementById('testimonialRating').value,
+    content: document.getElementById('testimonialContent').value,
+    active: +document.getElementById('testimonialActive').value
+  };
+  const r = id ? await api('PUT', '/admin/testimonials/' + id, data) : await api('POST', '/admin/testimonials', data);
+  if (r?.success) { closeModal('testimonialModal'); loadTestimonials(); showAlert('alertTestimonials','success', 'Saved!'); }
+  else showAlert('alertTestimonials', 'error', r?.message || 'Error');
+}
+
+// ── TEAM ──────────────────────────────────────
+async function loadTeam() {
+  const r = await api('GET', '/admin/team');
+  if (!r) return;
+  const tbody = document.getElementById('teamTable');
+  if (!r.length) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-2);padding:40px">No team members yet</td></tr>'; return; }
+  tbody.innerHTML = r.map(m => `
+    <tr>
+      <td><strong>${esc(m.name)}</strong></td>
+      <td>${esc(m.role)}</td>
+      <td><span class="status-badge ${m.active ? 'active' : 'inactive'}">${m.active ? 'Active' : 'Inactive'}</span></td>
+      <td><div class="action-btns">
+        <button class="action-btn" onclick='editTeam(${JSON.stringify(m)})'><i class="fas fa-edit"></i></button>
+        <button class="action-btn danger" onclick="deleteItem('team',${m.id})"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openTeamModal(m) {
+  document.getElementById('teamModalTitle').textContent = m ? 'Edit Member' : 'Add Member';
+  document.getElementById('teamId').value = m?.id || '';
+  document.getElementById('teamName').value = m?.name || '';
+  document.getElementById('teamRole').value = m?.role || '';
+  document.getElementById('teamBio').value = m?.bio || '';
+  document.getElementById('teamLinkedin').value = m?.linkedin || '';
+  document.getElementById('teamTwitter').value = m?.twitter || '';
+  document.getElementById('teamOrder').value = m?.order_index ?? 0;
+  document.getElementById('teamActive').value = m?.active ?? 1;
+  openModal('teamModal');
+}
+function editTeam(m) { openTeamModal(m); }
+
+async function saveTeam() {
+  const id = document.getElementById('teamId').value;
+  const data = {
+    name: document.getElementById('teamName').value,
+    role: document.getElementById('teamRole').value,
+    bio: document.getElementById('teamBio').value,
+    linkedin: document.getElementById('teamLinkedin').value,
+    twitter: document.getElementById('teamTwitter').value,
+    order_index: +document.getElementById('teamOrder').value,
+    active: +document.getElementById('teamActive').value
+  };
+  const r = id ? await api('PUT', '/admin/team/' + id, data) : await api('POST', '/admin/team', data);
+  if (r?.success) { closeModal('teamModal'); loadTeam(); showAlert('alertTeam','success', 'Saved!'); }
+  else showAlert('alertTeam', 'error', r?.message || 'Error');
+}
+
+// ── MESSAGES ──────────────────────────────────
+async function loadMessages() {
+  const r = await api('GET', '/admin/messages');
+  if (!r) return;
+  const tbody = document.getElementById('messagesTable');
+  if (!r.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-2);padding:40px">No messages yet</td></tr>'; return; }
+  tbody.innerHTML = r.map(m => `
+    <tr>
+      <td><strong>${esc(m.name)}</strong></td>
+      <td>${esc(m.email)}</td>
+      <td>${esc(m.phone || '—')}</td>
+      <td>${esc(m.subject || '—')}</td>
+      <td>${fmtDate(m.created_at)}</td>
+      <td><span class="status-badge ${m.read ? 'read' : 'unread'}">${m.read ? '● Read' : '● New'}</span></td>
+      <td><div class="action-btns">
+        <button class="action-btn" onclick="viewMessage(${m.id})"><i class="fas fa-eye"></i></button>
+        <button class="action-btn danger" onclick="deleteItem('messages',${m.id})"><i class="fas fa-trash"></i></button>
+      </div></td>
+    </tr>`).join('');
+}
+
+async function viewMessage(id) {
+  const r = await api('GET', '/admin/messages/' + id);
+  if (!r) return;
+  const waNumber = r.phone ? r.phone.replace(/\D/g,'') : '';
+  const waLink = waNumber ? `https://wa.me/${waNumber.startsWith('0') ? '234'+waNumber.slice(1) : waNumber}` : '';
+  document.getElementById('messageDetails').innerHTML = `
+    <div style="display:grid;gap:16px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px">
+          <small style="color:var(--text-2);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em">From</small>
+          <p style="margin-top:4px;font-weight:600">${esc(r.name)}</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px">
+          <small style="color:var(--text-2);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em">Email</small>
+          <p style="margin-top:4px"><a href="mailto:${esc(r.email)}" style="color:var(--cyan)">${esc(r.email)}</a></p>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px">
+          <small style="color:var(--text-2);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em">WhatsApp Number</small>
+          <p style="margin-top:4px">${waNumber ? `<a href="${waLink}" target="_blank" style="color:#25D366">+${waNumber}</a>` : '<span style="color:var(--text-2)">Not provided</span>'}</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px">
+          <small style="color:var(--text-2);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em">Service Requested</small>
+          <p style="margin-top:4px">${esc(r.subject || '—')}</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px">
+          <small style="color:var(--text-2);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em">Date Received</small>
+          <p style="margin-top:4px">${fmtDate(r.created_at)}</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);padding:12px;border-radius:8px">
+          <small style="color:var(--text-2);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em">Status</small>
+          <p style="margin-top:4px"><span class="status-badge ${r.read ? 'read' : 'unread'}">${r.read ? 'Read' : 'New'}</span></p>
+        </div>
+      </div>
+      <div>
+        <small style="color:var(--text-2);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em">Message</small>
+        <div class="message-preview" style="margin-top:8px"><p>${esc(r.message)}</p></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+        <a href="mailto:${esc(r.email)}?subject=Re: ${esc(r.subject || 'Your Inquiry')}&body=Hello ${esc(r.name)},%0D%0A%0D%0AThank you for reaching out to ViplineTech.%0D%0A%0D%0A" 
+           class="btn-primary" style="display:inline-flex;align-items:center;gap:8px;font-size:0.82rem;text-decoration:none">
+          <i class="fas fa-reply"></i> Reply via Email
+        </a>
+        ${waLink ? `
+        <a href="${waLink}?text=Hello%20${encodeURIComponent(r.name)}%2C%20thank%20you%20for%20contacting%20ViplineTech.%20Regarding%20your%20inquiry%20about%20${encodeURIComponent(r.subject||'our services')}%2C%20I'd%20like%20to%20discuss%20further." 
+           class="btn-outline" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;font-size:0.82rem;color:#25D366;border-color:#25D366;text-decoration:none">
+          <i class="fab fa-whatsapp"></i> Reply on WhatsApp
+        </a>` : `<span style="font-size:0.78rem;color:var(--text-2);align-self:center"><i class="fab fa-whatsapp"></i> No WhatsApp number provided</span>`}
+      </div>
+    </div>`;
+  openModal('messageModal');
+  await api('PUT', '/admin/messages/' + id + '/read');
+  loadDashboard();
+}
+
+// ── DELETE ────────────────────────────────────
+async function deleteItem(type, id) {
+  if (!confirm('Delete this item? This cannot be undone.')) return;
+  const r = await api('DELETE', `/admin/${type}/${id}`);
+  if (r?.success) {
+    const loaders = { services: loadServices, portfolio: loadPortfolio, testimonials: loadTestimonials, team: loadTeam, messages: loadMessages };
+    loaders[type]?.();
+    loadDashboard();
+  }
+}
+
+// ── SETTINGS ─────────────────────────────────
+let settingsData = {};
+async function loadSettings() {
+  const r = await api('GET', '/admin/settings');
+  if (!r) return;
+  settingsData = r;
+  const form = document.getElementById('settingsForm');
+  Object.entries(r).forEach(([k,v]) => {
+    const el = form.querySelector(`[name="${k}"]`);
+    if (el) el.value = v || '';
+  });
+  // Trigger logo previews after values are filled
+  ['logo_dark_url','logo_light_url','favicon_url'].forEach(name => {
+    const input = form.querySelector(`[name="${name}"]`);
+    if (input?.value) input.dispatchEvent(new Event('input'));
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // ── SETTINGS TABS ──
+  document.querySelectorAll('.settings-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('[id^="stab-"]').forEach(s => s.style.display = 'none');
+      const target = document.getElementById('stab-' + tab.dataset.stab);
+      if (target) target.style.display = 'grid';
+    });
+  });
+
+  // ── SETTINGS SAVE ──
+  document.getElementById('settingsForm')?.addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = {};
+    e.target.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
+      data[el.name] = el.value;
+    });
+    const r = await api('PUT', '/admin/settings', data);
+    if (r?.success) {
+      settingsData = { ...settingsData, ...data };
+      showAlert('alertSettings', 'success', 'Settings saved successfully!');
+    } else {
+      showAlert('alertSettings', 'error', r?.message || 'Error saving settings');
+    }
+  });
+
+  // ── PASSWORD ──
+  document.getElementById('passwordForm')?.addEventListener('submit', async e => {
+    e.preventDefault();
+    const np = document.getElementById('newPassword').value;
+    const cp = document.getElementById('confirmPassword').value;
+    if (np !== cp) { showAlert('alertAccount','error','Passwords do not match'); return; }
+    const r = await api('PUT', '/admin/account/password', {
+      currentPassword: document.getElementById('currentPassword').value,
+      newPassword: np
+    });
+    showAlert('alertAccount', r?.success ? 'success' : 'error', r?.message || (r?.success ? 'Password updated!' : 'Error'));
+    if (r?.success) e.target.reset();
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ── PASSWORD ──────────────────────────────────
+
+// ── LOGOUT ────────────────────────────────────
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+  await api('POST', '/auth/logout');
+  window.location.href = '/admin/login.html';
+});
+
+// ── ESCAPE ────────────────────────────────────
+function esc(str) {
+  if (str == null) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── LOGO LIVE PREVIEW ─────────────────────────
+function initLogoPreview() {
+  const darkInput  = document.querySelector('input[name="logo_dark_url"]');
+  const lightInput = document.querySelector('input[name="logo_light_url"]');
+  const faviconInput = document.querySelector('input[name="favicon_url"]');
+
+  function updatePreview(input, previewId, fallbackText) {
+    if (!input) return;
+    input.addEventListener('input', () => {
+      const url = input.value.trim();
+      const box = document.getElementById(previewId);
+      if (!box) return;
+      if (url) {
+        box.innerHTML = `<img src="${url}" style="max-height:36px;max-width:140px;object-fit:contain" onerror="this.parentElement.innerHTML='<span style=\\'font-size:0.72rem;color:#ff6b6b\\'>Invalid URL</span>'" />`;
+      } else {
+        box.innerHTML = `<span style="font-size:0.72rem;color:${fallbackText.includes('dark') ? '#ffffff30' : '#00000030'}">${fallbackText}</span>`;
+      }
+    });
+  }
+  updatePreview(darkInput,    'darkLogoPreview',    'No dark logo set');
+  updatePreview(lightInput,   'lightLogoPreview',   'No light logo set');
+  updatePreview(faviconInput, 'faviconPreview',     '—');
+
+  // Trigger preview on load if values exist
+  [darkInput, lightInput, faviconInput].forEach(input => {
+    if (input?.value) input.dispatchEvent(new Event('input'));
+  });
+}
+
+// ── INIT ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadDashboard();
+  try { initLogoPreview(); } catch(e) { console.warn('Logo preview init failed:', e); }
+});
+</script>
+</body>
+</html>

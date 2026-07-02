@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 60" role="img">
+  <title>ViplineTech</title>
+  <desc>ViplineTech — Digital Solutions</desc>
+  <defs>
+    <linearGradient id="vt-grad-d" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066FF"/>
+      <stop offset="100%" stop-color="#00D4FF"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="52" height="52" rx="13" fill="#07090F"/>
+  <rect x="0" y="0" width="52" height="52" rx="13" fill="none" stroke="url(#vt-grad-d)" stroke-width="2"/>
+  <polyline points="12,14 26,41 40,14" fill="none" stroke="url(#vt-grad-d)" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="26" cy="41.5" r="3.2" fill="#00D4FF" opacity="0.95"/>
+  <text x="62" y="30" font-family="'Syne', system-ui, sans-serif" font-size="22" font-weight="800" letter-spacing="-0.5" fill="#07090F">ViplineTech</text>
+  <text x="63" y="46" font-family="system-ui, sans-serif" font-size="8.5" font-weight="400" letter-spacing="3.5" fill="#0066FF">DIGITAL SOLUTIONS</text>
+</svg>
