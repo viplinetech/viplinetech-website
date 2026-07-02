@@ -1907,3 +1907,9 @@ select, input, textarea { font-family: inherit; }
     -webkit-tap-highlight-color: transparent;
   }
 }
+/* ── HIDE ABOUT VISUAL ON MOBILE ─────────────── */
+@media (max-width: 768px) {
+  .about-visual { display: none !important; }
+  .about-grid { grid-template-columns: 1fr !important; gap: 0 !important; }
+  .about-text { width: 100% !important; }
+}
