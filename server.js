@@ -5,7 +5,7 @@ const path = require('path');
 const morgan = require('morgan');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // ── MIDDLEWARE ─────────────────────────────────
 app.use(morgan('dev'));
@@ -49,7 +49,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/api/admin', adminRoutes);
 
-// ── HEALTH CHECK (used by keep-alive ping) ──────
+// ── HEALTH CHECK ────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -67,28 +67,8 @@ app.get('/{*path}', (req, res) => {
 // ── START ────────────────────────────────────────
 async function start() {
   const { getDb } = require('./database/db');
-  const db = await getDb();
+  await getDb(); // initializes Turso + seeds if empty
   console.log('✓ Database initialized');
-
-  // ── AUTO-CREATE ADMIN ONLY IF NONE EXISTS ───────
-  // This runs ONCE on fresh database, never overwrites existing admin
-  try {
-    const bcrypt = require('bcryptjs');
-    const result = db.exec(`SELECT id FROM admins LIMIT 1`);
-    const hasAdmin = result.length && result[0].values.length;
-    if (!hasAdmin) {
-      const hash = await bcrypt.hash('@ViplineTech@@', 12);
-      db.run(`INSERT INTO admins (username, password, email) VALUES (?, ?, ?)`,
-        ['ViplineTech', hash, 'viplinetech@gmail.com']);
-      const { saveDb } = require('./database/db');
-      saveDb();
-      console.log('✓ Admin user created — username: ViplineTech');
-    } else {
-      console.log('✓ Admin user exists — skipping seed');
-    }
-  } catch(e) {
-    console.warn('⚠ Admin setup skipped:', e.message);
-  }
 
   app.listen(PORT, () => {
     console.log(`✓ Vipline Technologies running on http://localhost:${PORT}`);
@@ -96,11 +76,9 @@ async function start() {
     console.log(`✓ Health check: http://localhost:${PORT}/api/health`);
 
     // ── KEEP-ALIVE SELF PING ──────────────────────
-    // Only runs in production (Railway) — not on localhost
     if (process.env.NODE_ENV === 'production' && process.env.SITE_URL) {
-      const PING_INTERVAL = 14 * 60 * 1000; // every 14 minutes
+      const PING_INTERVAL = 14 * 60 * 1000;
       const SITE_URL = process.env.SITE_URL;
-
       setTimeout(() => {
         setInterval(async () => {
           try {
@@ -111,9 +89,8 @@ async function start() {
             console.warn(`⚠ Keep-alive ping failed: ${err.message}`);
           }
         }, PING_INTERVAL);
-
         console.log(`✓ Keep-alive started — pinging ${SITE_URL} every 14 minutes`);
-      }, 30000); // wait 30s after startup before first ping
+      }, 30000);
     }
   });
 }
