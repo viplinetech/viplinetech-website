@@ -9,7 +9,7 @@ router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ success: false, message: 'Username and password required' });
 
-    const admin = get('SELECT * FROM admins WHERE username = ?', [username]);
+    const admin = await get('SELECT * FROM admins WHERE username = ?', [username]);
     if (!admin) return res.status(401).json({ success: false, message: 'Invalid username or password' });
 
     const valid = await bcrypt.compare(password, admin.password);
