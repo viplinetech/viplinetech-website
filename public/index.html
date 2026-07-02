@@ -2,7 +2,20 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <script>
+    // Prevent pinch-to-zoom on mobile
+    document.addEventListener('touchmove', function(e) {
+      if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    // Prevent double-tap zoom
+    let lastTap = 0;
+    document.addEventListener('touchend', function(e) {
+      const now = Date.now();
+      if (now - lastTap < 300) e.preventDefault();
+      lastTap = now;
+    }, { passive: false });
+  </script>
 
   <!-- ══════════════════════════════════════════
        PRIMARY SEO META TAGS
@@ -290,7 +303,7 @@ content="#050A14">
   <a href="#portfolio" class="mobile-link">Portfolio</a>
   <a href="#testimonials" class="mobile-link">Clients</a>
   <a href="#contact" class="mobile-link">Contact</a>
-  <a href="#contact" class="btn-primary">Get Sin Touch</a>
+  <a href="#contact" class="btn-primary">Get in Touch</a>
 </div>
 
 <!-- ═══════════════════════════ HERO ═══════════════════════════ -->
@@ -492,7 +505,7 @@ content="#050A14">
         <h3>Software Development</h3>
         <p>Custom, scalable software built for your exact business needs — web apps, desktop tools, APIs, SaaS platforms and enterprise systems.</p>
         <div class="service-tags"><span>Web Apps</span><span>SaaS</span><span>API</span></div>
-        <a href="#contact" class="service-link" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#contact" class="service-link">Get in Touch <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </div>
 
       <div class="service-card" data-aos="fade-up" data-aos-delay="80">
@@ -503,7 +516,7 @@ content="#050A14">
         <h3>App Development</h3>
         <p>Native and cross-platform mobile apps for iOS and Android — fast, intuitive, and built to delight users from day one.</p>
         <div class="service-tags"><span>iOS</span><span>Android</span><span>React Native</span></div>
-        <a href="#contact" class="service-link" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#contact" class="service-link">Get in Touch <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </div>
 
       <div class="service-card featured-service" data-aos="fade-up" data-aos-delay="160">
@@ -515,7 +528,7 @@ content="#050A14">
         <h3>Website Design & UI/UX</h3>
         <p>Stunning, conversion-focused websites and interfaces — pixel-perfect design meets seamless user experience and blazing performance.</p>
         <div class="service-tags"><span>UI/UX</span><span>Responsive</span><span>Fast</span></div>
-        <a href="#contact" class="service-link" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#contact" class="service-link">Get in Touch <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </div>
 
       <div class="service-card" data-aos="fade-up" data-aos-delay="240">
@@ -526,7 +539,7 @@ content="#050A14">
         <h3>Product Design</h3>
         <p>End-to-end product design from wireframes to high-fidelity prototypes — crafting digital experiences users love and businesses trust.</p>
         <div class="service-tags"><span>Branding</span><span>Prototyping</span><span>UX Research</span></div>
-        <a href="#contact" class="service-link" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#contact" class="service-link">Get in Touch <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </div>
 
       <div class="service-card" data-aos="fade-up" data-aos-delay="320">
@@ -537,7 +550,7 @@ content="#050A14">
         <h3>Ecommerce Solutions</h3>
         <p>Launch and scale powerful online stores — payment integration, inventory management, and optimized shopping experiences that convert.</p>
         <div class="service-tags"><span>Online Store</span><span>Payments</span><span>SEO</span></div>
-        <a href="#contact" class="service-link" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started<i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#contact" class="service-link">Get in Touch<i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </div>
 
       <div class="service-card" data-aos="fade-up" data-aos-delay="400">
@@ -548,7 +561,7 @@ content="#050A14">
         <h3>Digital Marketing & SEO</h3>
         <p>Data-driven digital marketing that grows your brand — SEO, social media management, content strategy, and targeted paid campaigns.</p>
         <div class="service-tags"><span>SEO</span><span>Social Media</span><span>Content</span></div>
-        <a href="#contact" class="service-link" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="#contact" class="service-link">Get in Touch <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
       </div>
 
     </div>

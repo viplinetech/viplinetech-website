@@ -11,15 +11,6 @@ themeToggle?.addEventListener('click', () => {
 });
 
 // ── PRELOADER ─────────────────────────────────
-// ── SERVICE "GET STARTED" CLICK — event delegation so it works on dynamic cards ──
-document.addEventListener('click', function(e) {
-  const link = e.target.closest('.service-link');
-  if (!link) return;
-  e.preventDefault();
-  const contact = document.getElementById('contact');
-  if (contact) contact.scrollIntoView({ behavior: 'smooth' });
-});
-
 window.addEventListener('load', () => {
   loadAllContent().then(() => {
     setTimeout(() => {
@@ -720,3 +711,120 @@ document.addEventListener('click', e => {
     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 });
+
+// ── SITE PROTECTION ────────────────────────────────────────────────────────
+
+(function() {
+
+  // 1. Disable right-click context menu
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // 2. Disable text selection
+  document.addEventListener('selectstart', e => e.preventDefault());
+
+  // 3. Disable drag
+  document.addEventListener('dragstart', e => e.preventDefault());
+
+  // 4. Disable copy / cut
+  document.addEventListener('copy', e => e.preventDefault());
+  document.addEventListener('cut', e => e.preventDefault());
+
+  // 5. Block keyboard shortcuts
+  document.addEventListener('keydown', e => {
+    const key = e.key.toLowerCase();
+
+    // Block F12
+    if (e.key === 'F12') { e.preventDefault(); return false; }
+
+    // Block Ctrl/Cmd combos: U (view source), S (save), A (select all),
+    // C (copy), X (cut), P (print), Shift+I / Shift+J / Shift+C (devtools)
+    if (e.ctrlKey || e.metaKey) {
+      if (['u','s','a','c','x','p'].includes(key)) { e.preventDefault(); return false; }
+      if (e.shiftKey && ['i','j','c'].includes(key)) { e.preventDefault(); return false; }
+    }
+
+    // Block Alt+F4 won't help but block Alt combos that open browser tools
+    if (e.altKey && key === 'f4') { e.preventDefault(); return false; }
+  });
+
+  // 6. Disable print (Ctrl+P and window.print)
+  window.addEventListener('beforeprint', e => e.preventDefault());
+  const _print = window.print;
+  window.print = function() { return false; };
+
+  // 7. DevTools detection — blur and overlay page when devtools open
+  const devtoolsOverlay = document.createElement('div');
+  devtoolsOverlay.id = 'devtools-block';
+  devtoolsOverlay.style.cssText = `
+    display:none;position:fixed;inset:0;z-index:999999;
+    background:#050A14;color:#fff;
+    flex-direction:column;align-items:center;justify-content:center;
+    font-family:sans-serif;text-align:center;
+  `;
+  devtoolsOverlay.innerHTML = `
+    <div style="font-size:3rem;margin-bottom:16px">🔒</div>
+    <h2 style="font-size:1.4rem;margin-bottom:8px;color:#0066FF">Access Restricted</h2>
+    <p style="color:#aaa;font-size:0.9rem">This content is protected by ViplineTech.<br>Please close developer tools to continue.</p>
+  `;
+  document.body.appendChild(devtoolsOverlay);
+
+  let devtoolsOpen = false;
+  function checkDevTools() {
+    const threshold = 160;
+    const widthDiff  = window.outerWidth  - window.innerWidth  > threshold;
+    const heightDiff = window.outerHeight - window.innerHeight > threshold;
+    if (widthDiff || heightDiff) {
+      if (!devtoolsOpen) {
+        devtoolsOpen = true;
+        devtoolsOverlay.style.display = 'flex';
+        document.body.style.filter = 'blur(10px)';
+        document.body.style.pointerEvents = 'none';
+      }
+    } else {
+      if (devtoolsOpen) {
+        devtoolsOpen = false;
+        devtoolsOverlay.style.display = 'none';
+        document.body.style.filter = '';
+        document.body.style.pointerEvents = '';
+      }
+    }
+  }
+  setInterval(checkDevTools, 1000);
+
+  // 8. Disable image dragging
+  document.querySelectorAll('img').forEach(img => {
+    img.setAttribute('draggable', 'false');
+    img.style.webkitUserDrag = 'none';
+  });
+  // Also catch dynamically added images
+  const imgObserver = new MutationObserver(() => {
+    document.querySelectorAll('img:not([draggable="false"])').forEach(img => {
+      img.setAttribute('draggable', 'false');
+    });
+  });
+  imgObserver.observe(document.body, { childList: true, subtree: true });
+
+  // 9. CSS-level protection
+  const style = document.createElement('style');
+  style.textContent = `
+    * {
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+      -webkit-touch-callout: none !important;
+    }
+    img {
+      -webkit-user-drag: none !important;
+      pointer-events: none !important;
+    }
+    a, button, input, textarea, select, .service-link, .btn, [onclick] {
+      pointer-events: auto !important;
+    }
+    @media print {
+      body { display: none !important; }
+    }
+  `;
+  document.head.appendChild(style);
+
+})();
