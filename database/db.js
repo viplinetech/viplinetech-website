@@ -1,46 +1,30 @@
-const initSqlJs = require('sql.js');
-const fs = require('fs');
-const path = require('path');
+const { createClient } = require('@libsql/client');
 
-const DB_PATH = path.join(__dirname, 'viplinetech.db');
+const client = createClient({
+  url: process.env.TURSO_DB_URL || 'libsql://viplinetech-viplinetech.aws-us-east-1.turso.io',
+  authToken: process.env.TURSO_AUTH_TOKEN || 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3ODMwMDkyNDIsImlkIjoiMDE5ZjIzYTAtYTMwMS03OTdmLTk2ODMtM2VlZWUwNDgyY2M4Iiwia2lkIjoiLXRQUnhhYUNmOWgzSkRyMDZnSkMyMUFXWUNpQnJIY3NlMHZQU005WjFOYyIsInJpZCI6IjFmMGUxNDQ5LWVjYWEtNGZjMC1iNzY4LWNlODc1MDI0MWZmMCJ9.fYxFFw8jd8JjdmIhx0G4tI8ZTmYkHAmmhfLgYFtuVAFlRFkHdxldUglC3_2jpaOjHJ6PK94qi8mqbRQdtATvBQ',
+});
 
-let db;
+let initialized = false;
 
 async function getDb() {
-  if (db) return db;
-  
-  const SQL = await initSqlJs();
-  
-  if (fs.existsSync(DB_PATH)) {
-    const fileBuffer = fs.readFileSync(DB_PATH);
-    db = new SQL.Database(fileBuffer);
-  } else {
-    db = new SQL.Database();
+  if (!initialized) {
+    await initSchema();
+    initialized = true;
   }
-  
-  initSchema();
-  return db;
+  return client;
 }
 
-function saveDb() {
-  if (!db) return;
-  const data = db.export();
-  const buffer = Buffer.from(data);
-  fs.writeFileSync(DB_PATH, buffer);
-}
-
-function initSchema() {
-  db.run(`
+async function initSchema() {
+  await client.executeMultiple(`
     CREATE TABLE IF NOT EXISTS admins (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       username TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       email TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS services (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
@@ -49,10 +33,8 @@ function initSchema() {
       order_index INTEGER DEFAULT 0,
       active INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS portfolio (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
@@ -63,10 +45,8 @@ function initSchema() {
       order_index INTEGER DEFAULT 0,
       active INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS messages (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -76,19 +56,15 @@ function initSchema() {
       message TEXT NOT NULL,
       read INTEGER DEFAULT 0,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS site_settings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       key TEXT UNIQUE NOT NULL,
       value TEXT,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS testimonials (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -98,10 +74,8 @@ function initSchema() {
       rating INTEGER DEFAULT 5,
       active INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
+    );
 
-  db.run(`
     CREATE TABLE IF NOT EXISTS team_members (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -113,39 +87,45 @@ function initSchema() {
       order_index INTEGER DEFAULT 0,
       active INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
+    );
   `);
 
-  // Seed default data
-  const adminCheck = db.exec("SELECT COUNT(*) as count FROM admins");
-  const adminCount = adminCheck[0].values[0][0];
-  
+  // Seed default data if empty
+  const adminCheck = await client.execute('SELECT COUNT(*) as count FROM admins');
+  const adminCount = adminCheck.rows[0].count;
+
   if (adminCount === 0) {
     const bcrypt = require('bcryptjs');
-    const hashedPassword = bcrypt.hashSync('Admin@ViplineTech2026', 10);
-    db.run("INSERT INTO admins (username, password, email) VALUES (?, ?, ?)", 
-      ['ViplineTech', hashedPassword, 'viplinetech@gmail.com']);
+    const hashedPassword = bcrypt.hashSync('@ViplineTech@@', 10);
+
+    await client.execute({
+      sql: 'INSERT INTO admins (username, password, email) VALUES (?, ?, ?)',
+      args: ['ViplineTech', hashedPassword, 'viplinetech@gmail.com']
+    });
 
     // Default services
     const services = [
-      ['Software Development', 'Custom, scalable software built for your exact business needs — web apps, desktop tools, APIs, SaaS platforms and enterprise systems tailored from the ground up.', 'fas fa-code', 1],
-      ['App Development', 'Native and cross-platform mobile applications for iOS and Android — fast, intuitive and built to delight users from day one.', 'fas fa-mobile-alt', 2],
-      ['Website Design & UI/UX', 'Stunning, conversion-focused websites and interfaces — pixel-perfect design meets seamless user experience and blazing performance.', 'fas fa-palette', 3],
-      ['Product Design', 'End-to-end product design from wireframes to high-fidelity prototypes — crafting digital experiences users love and businesses trust.', 'fas fa-pen-nib', 4],
-      ['Ecommerce Solutions', 'Launch and scale powerful online stores with payment integration, inventory management and optimized shopping experiences that convert visitors to buyers.', 'fas fa-shopping-cart', 5],
-      ['Digital Marketing & SEO', 'Data-driven digital marketing that grows your brand — SEO, social media management, content strategy and targeted paid campaigns.', 'fas fa-chart-line', 6],
+      ['Custom Software Engineering', 'We design and build scalable, high-performance software tailored to your exact business needs, from web applications and APIs to enterprise systems and SaaS platforms built to grow with you.', 'fas fa-code', 1],
+      ['Mobile App Development', 'We craft native and cross-platform mobile apps for iOS and Android that are fast, intuitive and built to deliver exceptional user experiences from day one.', 'fas fa-mobile-alt', 2],
+      ['Website Design & Development', 'We build stunning, high-performance websites that combine pixel-perfect design with seamless functionality, optimized for speed, SEO and conversion across all devices.', 'fas fa-palette', 3],
+      ['UI/UX & Product Design', 'From wireframes to high-fidelity prototypes, we design digital products that users love, blending research-driven UX thinking with bold, modern visual design.', 'fas fa-pen-nib', 4],
+      ['Ecommerce Solutions', 'We build and scale powerful online stores with secure payment integration, inventory management and conversion-optimized shopping experiences that turn visitors into loyal customers.', 'fas fa-shopping-cart', 5],
+      ['Digital Marketing & SEO', 'We grow your brand online through data-driven strategies: search engine optimization, social media management, content marketing and targeted paid campaigns that deliver real results.', 'fas fa-chart-line', 6],
     ];
-    services.forEach(([title, desc, icon, idx]) => {
-      db.run("INSERT INTO services (title, description, icon, order_index) VALUES (?, ?, ?, ?)", [title, desc, icon, idx]);
-    });
+    for (const [title, desc, icon, idx] of services) {
+      await client.execute({
+        sql: 'INSERT INTO services (title, description, icon, order_index) VALUES (?, ?, ?, ?)',
+        args: [title, desc, icon, idx]
+      });
+    }
 
     // Default settings
     const settings = [
       ['company_name', 'Vipline Technologies Limited'],
-      ['tagline', 'Innovating the Future, One Solution at a Time'],
+      ['tagline', 'Innovating Africa\'s Digital Future'],
       ['hero_title', 'Technology & Digital Services for Nigeria and Beyond'],
       ['hero_subtitle', 'We build software, design experiences, power ecommerce, and create digital solutions that transform businesses across Africa.'],
-      ['about_text', 'Vipline Technologies Limited is a registered technology and digital services company based in Port Harcourt, Rivers State, Nigeria. Founded in 2026, we are committed to delivering innovative, high-quality technology solutions that empower businesses and individuals to thrive in the digital economy. From software development to ecommerce, web design to music production — we bring expertise, creativity, and dedication to every project.'],
+      ['about_text', 'Vipline Technologies Limited is a registered technology and digital services company based in Port Harcourt, Rivers State, Nigeria. Founded in 2026, we are committed to delivering innovative, high-quality technology solutions that empower businesses and individuals to thrive in the digital economy.'],
       ['phone', '+2347039369336'],
       ['email', 'viplinetech@gmail.com'],
       ['address', 'House 3, Cherry Drive, Ceedarwood Estate, SARS Road, Port Harcourt, Rivers State, Nigeria'],
@@ -155,10 +135,24 @@ function initSchema() {
       ['instagram', '#'],
       ['linkedin', '#'],
       ['whatsapp', '+2347039369336'],
+      ['hero_badge', 'CAC Registered · RC 9644291 · Port Harcourt, Nigeria'],
+      ['hero_title_line1', 'We Build the'],
+      ['hero_title_line2', 'Digital Future'],
+      ['hero_title_line3', 'of Africa'],
+      ['stat_1_number', '50'], ['stat_1_suffix', '+'], ['stat_1_label', 'Projects Delivered'],
+      ['stat_2_number', '30'], ['stat_2_suffix', '+'], ['stat_2_label', 'Happy Clients'],
+      ['stat_3_number', '6'],  ['stat_3_suffix', ''],  ['stat_3_label', 'Core Services'],
+      ['stat_4_number', '100'],['stat_4_suffix', '%'], ['stat_4_label', 'Client Satisfaction'],
+      ['logo_dark_url', ''], ['logo_light_url', ''], ['favicon_url', ''],
+      ['footer_tagline', 'A CAC-registered Nigerian technology company delivering world-class software, apps and digital solutions across Africa and beyond.'],
+      ['seo_description', 'ViplineTech is a CAC-registered technology company in Port Harcourt delivering software development, app development, website design, UI/UX, product design and digital marketing across Nigeria and Africa.'],
     ];
-    settings.forEach(([key, value]) => {
-      db.run("INSERT INTO site_settings (key, value) VALUES (?, ?)", [key, value]);
-    });
+    for (const [key, value] of settings) {
+      await client.execute({
+        sql: 'INSERT OR IGNORE INTO site_settings (key, value) VALUES (?, ?)',
+        args: [key, value]
+      });
+    }
 
     // Default testimonials
     const testimonials = [
@@ -166,85 +160,35 @@ function initSchema() {
       ['Amina Yusuf', 'Marketing Director', 'Apex Digital Agency', 'The web design team at Vipline delivered beyond our expectations. Clean, modern, and incredibly fast.', 5],
       ['Chidi Nwosu', 'Founder', 'TechHub Port Harcourt', 'Outstanding software development team. They understood our vision and delivered a flawless product on time.', 5],
     ];
-    testimonials.forEach(([name, role, company, content, rating]) => {
-      db.run("INSERT INTO testimonials (name, role, company, content, rating) VALUES (?, ?, ?, ?, ?)", [name, role, company, content, rating]);
-    });
+    for (const [name, role, company, content, rating] of testimonials) {
+      await client.execute({
+        sql: 'INSERT INTO testimonials (name, role, company, content, rating) VALUES (?, ?, ?, ?, ?)',
+        args: [name, role, company, content, rating]
+      });
+    }
 
-    saveDb();
-    addDynamicSettings();
+    console.log('✓ Database seeded with default data');
   }
-  // Always run to add any missing settings on existing installs
-  addDynamicSettings();
 }
 
-function query(sql, params = []) {
-  const stmt = db.prepare(sql);
-  stmt.bind(params);
-  const rows = [];
-  while (stmt.step()) {
-    rows.push(stmt.getAsObject());
-  }
-  stmt.free();
-  return rows;
+async function query(sql, params = []) {
+  const result = await client.execute({ sql, args: params });
+  return result.rows;
 }
 
-function run(sql, params = []) {
-  db.run(sql, params);
-  saveDb();
-  return { changes: db.getRowsModified() };
+async function run(sql, params = []) {
+  const result = await client.execute({ sql, args: params });
+  return { changes: result.rowsAffected, lastInsertRowid: result.lastInsertRowid };
 }
 
-function get(sql, params = []) {
-  const rows = query(sql, params);
+async function get(sql, params = []) {
+  const rows = await query(sql, params);
   return rows[0] || null;
 }
 
-module.exports = { getDb, query, run, get, saveDb };
-
-// Call this to add new dynamic settings fields
-function addDynamicSettings() {
-  const newSettings = [
-    ['hero_badge', 'CAC Registered · RC 9644291 · Port Harcourt, Nigeria'],
-    ['hero_title_line1', 'We Build the'],
-    ['hero_title_line2', 'Digital Future'],
-    ['hero_title_line3', 'of Africa'],
-    ['hero_subtitle', 'Nigeria\'s premier technology and digital services company — delivering world-class software, apps, websites and digital solutions that transform businesses across Africa.'],
-    ['stat_1_number', '50'],
-    ['stat_1_suffix', '+'],
-    ['stat_1_label', 'Projects Delivered'],
-    ['stat_2_number', '30'],
-    ['stat_2_suffix', '+'],
-    ['stat_2_label', 'Happy Clients'],
-    ['stat_3_number', '6'],
-    ['stat_3_suffix', ''],
-    ['stat_3_label', 'Core Services'],
-    ['stat_4_number', '100'],
-    ['stat_4_suffix', '%'],
-    ['stat_4_label', 'Client Satisfaction'],
-    ['why_title', 'Built Different. Delivering More.'],
-    ['why_subtitle', 'We don\'t just build products — we build partnerships. Every project is treated as our own, combining deep technical expertise, creative design thinking, and sharp business strategy.'],
-    ['why_point_1_num', '01'],
-    ['why_point_1_title', 'Agile & Rapid Delivery'],
-    ['why_point_1_desc', 'Structured development cycles with transparent progress tracking and on-time delivery every time.'],
-    ['why_point_2_num', '02'],
-    ['why_point_2_title', 'End-to-End Solutions'],
-    ['why_point_2_desc', 'From concept to launch and beyond — strategy, design, development, deployment and ongoing support.'],
-    ['why_point_3_num', '03'],
-    ['why_point_3_title', 'Nigeria-Rooted, World-Class'],
-    ['why_point_3_desc', 'Deep understanding of the Nigerian and African market, combined with international standards.'],
-    ['marquee_items', 'Software Development,App Development,Website Design & UI/UX,Product Design,Ecommerce Solutions,Digital Marketing,SEO Optimization,Cloud Solutions'],
-    ['logo_dark_url',  ''],
-    ['logo_light_url', ''],
-    ['favicon_url',    ''],
-    ['seo_description', 'ViplineTech is a CAC-registered technology company in Port Harcourt delivering software development, app development, website design, UI/UX, product design and digital marketing across Nigeria and Africa.'],
-    ['about_heading', 'Pioneering Digital Innovation in Nigeria'],
-    ['footer_tagline', 'A CAC-registered Nigerian technology company delivering world-class software, apps and digital solutions across Africa and beyond.'],
-  ];
-
-  newSettings.forEach(([key, value]) => {
-    try {
-      db.run('INSERT OR IGNORE INTO site_settings (key, value) VALUES (?, ?)', [key, value]);
-    } catch(e) {}
-  });
-  saveDb();
+function saveDb() {
+  // No-op for Turso — data is saved automatically in the cloud
+  return Promise.resolve();
 }
+
+module.exports = { getDb, query, run, get, saveDb };
