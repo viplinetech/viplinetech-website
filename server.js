@@ -67,8 +67,32 @@ app.get('/{*path}', (req, res) => {
 // ── START ────────────────────────────────────────
 async function start() {
   const { getDb } = require('./database/db');
-  await getDb();
+  const db = await getDb();
   console.log('✓ Database initialized');
+
+  // ── AUTO-CREATE ADMIN IF NOT EXISTS ─────────────
+  try {
+    const bcrypt = require('bcryptjs');
+    const result = db.exec(`SELECT id FROM admins LIMIT 1`);
+    const hasAdmin = result.length && result[0].values.length;
+    if (!hasAdmin) {
+      const hash = await bcrypt.hash('@ViplineTech@@', 12);
+      db.run(`INSERT INTO admins (username, password, email) VALUES (?, ?, ?)`,
+        ['ViplineTech', hash, 'viplinetech@gmail.com']);
+      const { saveDb } = require('./database/db');
+      saveDb();
+      console.log('✓ Admin user created — username: ViplineTech');
+    } else {
+      // Update existing admin password to new credentials
+      const hash = await bcrypt.hash('@ViplineTech@@', 12);
+      db.run(`UPDATE admins SET username = ?, password = ? WHERE id = 1`, ['ViplineTech', hash]);
+      const { saveDb } = require('./database/db');
+      saveDb();
+      console.log('✓ Admin credentials updated — username: ViplineTech');
+    }
+  } catch(e) {
+    console.warn('⚠ Admin setup skipped:', e.message);
+  }
 
   app.listen(PORT, () => {
     console.log(`✓ Vipline Technologies running on http://localhost:${PORT}`);
