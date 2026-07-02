@@ -70,7 +70,8 @@ async function start() {
   const db = await getDb();
   console.log('✓ Database initialized');
 
-  // ── AUTO-CREATE ADMIN IF NOT EXISTS ─────────────
+  // ── AUTO-CREATE ADMIN ONLY IF NONE EXISTS ───────
+  // This runs ONCE on fresh database, never overwrites existing admin
   try {
     const bcrypt = require('bcryptjs');
     const result = db.exec(`SELECT id FROM admins LIMIT 1`);
@@ -83,12 +84,7 @@ async function start() {
       saveDb();
       console.log('✓ Admin user created — username: ViplineTech');
     } else {
-      // Update existing admin password to new credentials
-      const hash = await bcrypt.hash('@ViplineTech@@', 12);
-      db.run(`UPDATE admins SET username = ?, password = ? WHERE id = 1`, ['ViplineTech', hash]);
-      const { saveDb } = require('./database/db');
-      saveDb();
-      console.log('✓ Admin credentials updated — username: ViplineTech');
+      console.log('✓ Admin user exists — skipping seed');
     }
   } catch(e) {
     console.warn('⚠ Admin setup skipped:', e.message);
