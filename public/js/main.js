@@ -267,7 +267,7 @@ async function loadServices() {
         </div>
         <h3>${esc(s.title)}</h3>
         <p>${esc(s.description)}</p>
-        <a href="#contact" class="service-link" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get Started <i class="fas fa-arrow-right"></i></a>
+        
       </div>`).join('');
 
     // Update typed words
@@ -816,9 +816,10 @@ document.addEventListener('click', e => {
     }
     img {
       -webkit-user-drag: none !important;
-      pointer-events: none !important;
+
     }
-    a, button, input, textarea, select, .service-link, .btn, [onclick] {
+    a, button, input, textarea, select, .service-link, .btn, [onclick],
+    .service-card, .service-card *, .nav-link, .cta-btn {
       pointer-events: auto !important;
     }
     @media print {
