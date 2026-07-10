@@ -441,6 +441,13 @@ backToTop?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: '
 function initCanvas() {
   const canvas = document.getElementById('heroCanvas');
   if (!canvas) return;
+
+  // Disable canvas on mobile/iOS to prevent black screen on Chrome iOS
+  if (window.innerWidth < 768 || /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    canvas.style.display = 'none';
+    return;
+  }
+
   const ctx = canvas.getContext('2d');
   let W, H, particles;
   function resize() { W = canvas.width = canvas.offsetWidth; H = canvas.height = canvas.offsetHeight; }
@@ -752,44 +759,7 @@ document.addEventListener('click', e => {
   const _print = window.print;
   window.print = function() { return false; };
 
-  // 7. DevTools detection — blur and overlay page when devtools open
-  const devtoolsOverlay = document.createElement('div');
-  devtoolsOverlay.id = 'devtools-block';
-  devtoolsOverlay.style.cssText = `
-    display:none;position:fixed;inset:0;z-index:999999;
-    background:#050A14;color:#fff;
-    flex-direction:column;align-items:center;justify-content:center;
-    font-family:sans-serif;text-align:center;
-  `;
-  devtoolsOverlay.innerHTML = `
-    <div style="font-size:3rem;margin-bottom:16px">🔒</div>
-    <h2 style="font-size:1.4rem;margin-bottom:8px;color:#0066FF">Access Restricted</h2>
-    <p style="color:#aaa;font-size:0.9rem">This content is protected by ViplineTech.<br>Please close developer tools to continue.</p>
-  `;
-  document.body.appendChild(devtoolsOverlay);
-
-  let devtoolsOpen = false;
-  function checkDevTools() {
-    const threshold = 160;
-    const widthDiff  = window.outerWidth  - window.innerWidth  > threshold;
-    const heightDiff = window.outerHeight - window.innerHeight > threshold;
-    if (widthDiff || heightDiff) {
-      if (!devtoolsOpen) {
-        devtoolsOpen = true;
-        devtoolsOverlay.style.display = 'flex';
-        document.body.style.filter = 'blur(10px)';
-        document.body.style.pointerEvents = 'none';
-      }
-    } else {
-      if (devtoolsOpen) {
-        devtoolsOpen = false;
-        devtoolsOverlay.style.display = 'none';
-        document.body.style.filter = '';
-        document.body.style.pointerEvents = '';
-      }
-    }
-  }
-  setInterval(checkDevTools, 1000);
+  // 7. DevTools detection removed — caused false triggers on Chrome mobile
 
   // 8. Disable image dragging
   document.querySelectorAll('img').forEach(img => {
