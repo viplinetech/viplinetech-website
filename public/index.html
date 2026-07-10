@@ -1121,5 +1121,22 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <script src="js/main.js"></script>
+
+<!-- iOS Chrome canvas black screen fix -->
+<script>
+  window.addEventListener('load', function() {
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+      var canvas = document.getElementById('heroCanvas');
+      if (canvas) {
+        canvas.style.display = 'none';
+        void canvas.offsetHeight;
+        canvas.style.display = '';
+      }
+      document.body.style.opacity = '0.99';
+      void document.body.offsetHeight;
+      document.body.style.opacity = '1';
+    }
+  });
+</script>
 </body>
 </html>
