@@ -125,17 +125,17 @@ async function initSchema() {
       ['tagline', 'Innovating Africa\'s Digital Future'],
       ['hero_title', 'Technology & Digital Services for Nigeria and Beyond'],
       ['hero_subtitle', 'We build software, design experiences, power ecommerce, and create digital solutions that transform businesses across Africa.'],
-      ['about_text', 'Vipline Technologies Limited is a registered technology and digital services company based in Port Harcourt, Rivers State, Nigeria. Founded in 2026, we are committed to delivering innovative, high-quality technology solutions that empower businesses and individuals to thrive in the digital economy.'],
+      ['about_text', 'Vipline Technologies Limited is a registered technology and digital services company based in Nigeria. Founded in 2026, we are committed to delivering innovative, high-quality technology solutions that empower businesses and individuals to thrive in the digital economy.'],
       ['phone', '+2347039369336'],
       ['email', 'viplinetech@gmail.com'],
-      ['address', 'House 3, Cherry Drive, Ceedarwood Estate, SARS Road, Port Harcourt, Rivers State, Nigeria'],
+      ['address', 'House 3, Cherry Drive, Ceedarwood Estate, SARS Road, Nigeria'],
       ['rc_number', 'RC 9644291'],
       ['facebook', '#'],
       ['twitter', '#'],
       ['instagram', '#'],
       ['linkedin', '#'],
       ['whatsapp', '+2347039369336'],
-      ['hero_badge', 'CAC Registered · RC 9644291 · Port Harcourt, Nigeria'],
+      ['hero_badge', 'CAC Registered · RC 9644291 · Nigeria'],
       ['hero_title_line1', 'We Build the'],
       ['hero_title_line2', 'Digital Future'],
       ['hero_title_line3', 'of Africa'],
@@ -145,7 +145,7 @@ async function initSchema() {
       ['stat_4_number', '100'],['stat_4_suffix', '%'], ['stat_4_label', 'Client Satisfaction'],
       ['logo_dark_url', ''], ['logo_light_url', ''], ['favicon_url', ''],
       ['footer_tagline', 'A CAC-registered Nigerian technology company delivering world-class software, apps and digital solutions across Africa and beyond.'],
-      ['seo_description', 'ViplineTech is a CAC-registered technology company in Port Harcourt delivering software development, app development, website design, UI/UX, product design and digital marketing across Nigeria and Africa.'],
+      ['seo_description', 'ViplineTech is a CAC-registered technology company in Nigeria delivering software development, app development, website design, UI/UX, product design and digital marketing across Nigeria and Africa.'],
     ];
     for (const [key, value] of settings) {
       await client.execute({
@@ -158,7 +158,7 @@ async function initSchema() {
     const testimonials = [
       ['Emeka Okafor', 'CEO', 'Okafor Trading Ltd', 'Vipline Technologies transformed our business with a world-class ecommerce platform. Their attention to detail and professionalism is unmatched.', 5],
       ['Amina Yusuf', 'Marketing Director', 'Apex Digital Agency', 'The web design team at Vipline delivered beyond our expectations. Clean, modern, and incredibly fast.', 5],
-      ['Chidi Nwosu', 'Founder', 'TechHub Port Harcourt', 'Outstanding software development team. They understood our vision and delivered a flawless product on time.', 5],
+      ['Chidi Nwosu', 'Founder', 'TechHub Nigeria', 'Outstanding software development team. They understood our vision and delivered a flawless product on time.', 5],
     ];
     for (const [name, role, company, content, rating] of testimonials) {
       await client.execute({
@@ -173,7 +173,7 @@ async function initSchema() {
   // Backfill SEO settings keys for installs seeded before these fields existed
   const seoDefaults = [
     ['seo_title', 'ViplineTech | Custom Software Development, Web Design, Mobile Apps & Digital Solutions Worldwide'],
-    ['seo_keywords', 'software development Nigeria, web design Port Harcourt, mobile app development Nigeria, UI UX design Nigeria, ecommerce development Africa, digital marketing Nigeria, custom software company Nigeria, tech company Port Harcourt, ViplineTech, Vipline Technologies'],
+    ['seo_keywords', 'software development Nigeria, web design Nigeria, mobile app development Nigeria, UI UX design Nigeria, ecommerce development Africa, digital marketing Nigeria, custom software company Nigeria, tech company Nigeria, ViplineTech, Vipline Technologies'],
     ['og_image_url', 'https://www.viplinetech.com/og-image.jpg'],
     ['twitter_image_url', 'https://www.viplinetech.com/og-image.jpg'],
     ['seo_robots', 'index'],
