@@ -169,6 +169,21 @@ async function initSchema() {
 
     console.log('✓ Database seeded with default data');
   }
+
+  // Backfill SEO settings keys for installs seeded before these fields existed
+  const seoDefaults = [
+    ['seo_title', 'ViplineTech | Custom Software Development, Web Design, Mobile Apps & Digital Solutions Worldwide'],
+    ['seo_keywords', 'software development Nigeria, web design Port Harcourt, mobile app development Nigeria, UI UX design Nigeria, ecommerce development Africa, digital marketing Nigeria, custom software company Nigeria, tech company Port Harcourt, ViplineTech, Vipline Technologies'],
+    ['og_image_url', 'https://www.viplinetech.com/og-image.jpg'],
+    ['twitter_image_url', 'https://www.viplinetech.com/og-image.jpg'],
+    ['seo_robots', 'index'],
+  ];
+  for (const [key, value] of seoDefaults) {
+    await client.execute({
+      sql: 'INSERT OR IGNORE INTO site_settings (key, value) VALUES (?, ?)',
+      args: [key, value]
+    });
+  }
 }
 
 async function query(sql, params = []) {

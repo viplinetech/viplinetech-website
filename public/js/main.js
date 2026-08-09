@@ -357,7 +357,7 @@ async function loadPortfolio() {
       <div class="portfolio-item" data-category="${item.category.toLowerCase()}" data-aos="fade-up" data-aos-delay="${(i%3)*100}" style="cursor:pointer">
         <div class="portfolio-thumb">
           ${item.image_url
-            ? `<div class="portfolio-real-img" style="background-image:url('${item.image_url}')"></div>`
+            ? `<div class="portfolio-real-img" role="img" aria-label="${item.title.replace(/"/g,'&quot;')}" style="background-image:url('${item.image_url}')"></div>`
             : `<div class="portfolio-placeholder ${bgClasses[i % bgClasses.length]}"><i class="${icons[i % icons.length]}"></i></div>`
           }
           <div class="portfolio-overlay">
@@ -563,7 +563,7 @@ function openPfModal(index) {
   // Thumbnail — real image or gradient placeholder
   const thumb = document.getElementById('pfModalThumb');
   if (item.image_url) {
-    thumb.innerHTML = `<div class="portfolio-real-img" style="background-image:url('${item.image_url}');min-height:320px;border-radius:var(--radius-xl) 0 0 var(--radius-xl)"></div>`;
+    thumb.innerHTML = `<div class="portfolio-real-img" role="img" aria-label="${item.title.replace(/"/g,'&quot;')}" style="background-image:url('${item.image_url}');min-height:320px;border-radius:var(--radius-xl) 0 0 var(--radius-xl)"></div>`;
   } else {
     const bg = bgClasses[pfIndex % bgClasses.length];
     const icon = pfIcons[pfIndex % pfIcons.length];

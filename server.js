@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const fs = require('fs');
 const morgan = require('morgan');
 
 const app = express();
@@ -24,7 +25,80 @@ app.use(session({
 }));
 
 // ── STATIC FILES ────────────────────────────────
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { index: false }));
+
+// ── SEO: SERVER-RENDERED INDEX ──────────────────
+const indexTemplatePath = path.join(__dirname, 'public', 'index.html');
+const escapeHtml = (str = '') => String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+async function renderIndex(req, res) {
+  try {
+    const { query } = require('./database/db');
+    const rows = await query('SELECT key, value FROM site_settings');
+    const s = {};
+    rows.forEach(r => { s[r.key] = r.value; });
+
+    const robotsContent = s.seo_robots === 'noindex'
+      ? 'noindex, nofollow'
+      : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+
+    let html = fs.readFileSync(indexTemplatePath, 'utf8');
+    html = html
+      .replace(/\{\{SEO_TITLE\}\}/g, escapeHtml(s.seo_title || 'ViplineTech | Custom Software Development, Web Design, Mobile Apps & Digital Solutions Worldwide'))
+      .replace(/\{\{SEO_DESCRIPTION\}\}/g, escapeHtml(s.seo_description || ''))
+      .replace(/\{\{SEO_KEYWORDS\}\}/g, escapeHtml(s.seo_keywords || ''))
+      .replace(/\{\{SEO_ROBOTS\}\}/g, escapeHtml(robotsContent))
+      .replace(/\{\{OG_IMAGE\}\}/g, escapeHtml(s.og_image_url || 'https://www.viplinetech.com/og-image.jpg'))
+      .replace(/\{\{TWITTER_IMAGE\}\}/g, escapeHtml(s.twitter_image_url || 'https://www.viplinetech.com/og-image.jpg'));
+
+    res.set('Content-Type', 'text/html');
+    res.send(html);
+  } catch (err) {
+    console.error('renderIndex error:', err.message);
+    res.sendFile(indexTemplatePath);
+  }
+}
+
+app.get('/', renderIndex);
+
+// ── ROBOTS.TXT & SITEMAP.XML ────────────────────
+app.get('/robots.txt', async (req, res) => {
+  try {
+    const { query } = require('./database/db');
+    const rows = await query('SELECT key, value FROM site_settings WHERE key = ?', ['seo_robots']);
+    const noindex = rows[0]?.value === 'noindex';
+    res.type('text/plain');
+    res.send(
+      noindex
+        ? 'User-agent: *\nDisallow: /\n'
+        : 'User-agent: *\nAllow: /\nDisallow: /admin\n\nSitemap: https://viplinetech.com/sitemap.xml\n'
+    );
+  } catch (err) {
+    res.type('text/plain').send('User-agent: *\nAllow: /\nDisallow: /admin\n');
+  }
+});
+
+app.get('/sitemap.xml', async (req, res) => {
+  let lastmod = new Date().toISOString().split('T')[0];
+  try {
+    const { query } = require('./database/db');
+    const rows = await query(
+      "SELECT MAX(updated_at) as latest FROM site_settings"
+    );
+    if (rows[0]?.latest) lastmod = new Date(rows[0].latest).toISOString().split('T')[0];
+  } catch (err) { /* fall back to today's date */ }
+
+  res.type('application/xml');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://viplinetech.com/</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`);
+});
 
 // ── ADMIN PROTECTION ────────────────────────────
 app.use('/admin', (req, res, next) => {
@@ -60,9 +134,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // ── FALLBACK ────────────────────────────────────
-app.get('/{*path}', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.get('/{*path}', renderIndex);
 
 // ── START ────────────────────────────────────────
 async function start() {
