@@ -125,7 +125,7 @@ async function initSchema() {
       ['tagline', 'Innovating Africa\'s Digital Future'],
       ['hero_title', 'Technology & Digital Services for Nigeria and Beyond'],
       ['hero_subtitle', 'We build software, design experiences, power ecommerce, and create digital solutions that transform businesses across Africa.'],
-      ['about_text', 'Vipline Technologies Limited is a registered technology and digital services company based in Nigeria. Founded in 2026, we are committed to delivering innovative, high-quality technology solutions that empower businesses and individuals to thrive in the digital economy.'],
+      ['about_text', 'Vipline Technologies Limited (ViplineTech) is a CAC-registered software development and digital services company headquartered in Nigeria, serving clients across Nigeria, Africa and worldwide. Founded in 2026, we deliver world-class custom software development, mobile app development, website design, UI/UX design, ecommerce solutions and digital marketing that help businesses grow locally and globally.'],
       ['phone', '+2347039369336'],
       ['email', 'viplinetech@gmail.com'],
       ['address', 'House 3, Cherry Drive, Ceedarwood Estate, SARS Road, Nigeria'],
@@ -144,8 +144,8 @@ async function initSchema() {
       ['stat_3_number', '6'],  ['stat_3_suffix', ''],  ['stat_3_label', 'Core Services'],
       ['stat_4_number', '100'],['stat_4_suffix', '%'], ['stat_4_label', 'Client Satisfaction'],
       ['logo_dark_url', ''], ['logo_light_url', ''], ['favicon_url', ''],
-      ['footer_tagline', 'A CAC-registered Nigerian technology company delivering world-class software, apps and digital solutions across Africa and beyond.'],
-      ['seo_description', 'ViplineTech is a CAC-registered technology company in Nigeria delivering software development, app development, website design, UI/UX, product design and digital marketing across Nigeria and Africa.'],
+      ['footer_tagline', 'A CAC-registered Nigerian software development and web design company delivering world-class software, mobile apps and digital solutions to clients across Nigeria, Africa and worldwide.'],
+      ['seo_description', 'CAC-registered software development and web design company serving Nigeria, Africa and worldwide. Custom software, mobile apps, ecommerce and digital marketing solutions that scale your business.'],
     ];
     for (const [key, value] of settings) {
       await client.execute({
@@ -172,8 +172,8 @@ async function initSchema() {
 
   // Backfill SEO settings keys for installs seeded before these fields existed
   const seoDefaults = [
-    ['seo_title', 'ViplineTech | Custom Software Development, Web Design, Mobile Apps & Digital Solutions Worldwide'],
-    ['seo_keywords', 'software development Nigeria, web design Nigeria, mobile app development Nigeria, UI UX design Nigeria, ecommerce development Africa, digital marketing Nigeria, custom software company Nigeria, tech company Nigeria, ViplineTech, Vipline Technologies'],
+    ['seo_title', 'ViplineTech | Software Development & Web Design Company – Nigeria, Africa & Worldwide'],
+    ['seo_keywords', 'software development company Nigeria, web design agency Nigeria, mobile app development Nigeria, custom software development Africa, website design company Africa, ecommerce development company Nigeria, UI UX design agency, digital marketing agency Nigeria, SEO company Nigeria, software development company worldwide, app developers Nigeria, tech company Lagos, tech company Abuja, custom software development company, web development services worldwide, ViplineTech, Vipline Technologies'],
     ['og_image_url', 'https://www.viplinetech.com/og-image.jpg'],
     ['twitter_image_url', 'https://www.viplinetech.com/og-image.jpg'],
     ['seo_robots', 'index'],

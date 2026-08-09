@@ -44,9 +44,9 @@ async function renderIndex(req, res) {
 
     let html = fs.readFileSync(indexTemplatePath, 'utf8');
     html = html
-      .replace(/\{\{SEO_TITLE\}\}/g, escapeHtml(s.seo_title || 'ViplineTech | Custom Software Development, Web Design, Mobile Apps & Digital Solutions Worldwide'))
-      .replace(/\{\{SEO_DESCRIPTION\}\}/g, escapeHtml(s.seo_description || ''))
-      .replace(/\{\{SEO_KEYWORDS\}\}/g, escapeHtml(s.seo_keywords || ''))
+      .replace(/\{\{SEO_TITLE\}\}/g, escapeHtml(s.seo_title || 'ViplineTech | Software Development & Web Design Company – Nigeria, Africa & Worldwide'))
+      .replace(/\{\{SEO_DESCRIPTION\}\}/g, escapeHtml(s.seo_description || 'CAC-registered software development and web design company serving Nigeria, Africa and worldwide. Custom software, mobile apps, ecommerce and digital marketing solutions that scale your business.'))
+      .replace(/\{\{SEO_KEYWORDS\}\}/g, escapeHtml(s.seo_keywords || 'software development company Nigeria, web design agency Nigeria, mobile app development Nigeria, custom software development Africa, digital marketing agency Nigeria, ViplineTech, Vipline Technologies'))
       .replace(/\{\{SEO_ROBOTS\}\}/g, escapeHtml(robotsContent))
       .replace(/\{\{OG_IMAGE\}\}/g, escapeHtml(s.og_image_url || 'https://www.viplinetech.com/og-image.jpg'))
       .replace(/\{\{TWITTER_IMAGE\}\}/g, escapeHtml(s.twitter_image_url || 'https://www.viplinetech.com/og-image.jpg'));
