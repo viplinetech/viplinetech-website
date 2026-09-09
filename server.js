@@ -44,7 +44,7 @@ async function renderIndex(req, res) {
 
     let html = fs.readFileSync(indexTemplatePath, 'utf8');
     html = html
-      .replace(/\{\{SEO_TITLE\}\}/g, escapeHtml(s.seo_title || 'ViplineTech | Software Development & Web Design Company – Nigeria, Africa & Worldwide'))
+      .replace(/\{\{SEO_TITLE\}\}/g, escapeHtml(s.seo_title || 'ViplineTech | Software Development & Web Design Company - Nigeria, Africa & Worldwide'))
       .replace(/\{\{SEO_DESCRIPTION\}\}/g, escapeHtml(s.seo_description || 'CAC-registered software development and web design company serving Nigeria, Africa and worldwide. Custom software, mobile apps, ecommerce and digital marketing solutions that scale your business.'))
       .replace(/\{\{SEO_KEYWORDS\}\}/g, escapeHtml(s.seo_keywords || 'software development company Nigeria, web design agency Nigeria, mobile app development Nigeria, custom software development Africa, digital marketing agency Nigeria, ViplineTech, Vipline Technologies'))
       .replace(/\{\{SEO_ROBOTS\}\}/g, escapeHtml(robotsContent))
@@ -212,12 +212,12 @@ async function start() {
           try {
             const res = await fetch(`${SITE_URL}/api/health`);
             const data = await res.json();
-            console.log(`✓ Keep-alive ping OK — uptime: ${data.uptime}`);
+            console.log(`✓ Keep-alive ping OK - uptime: ${data.uptime}`);
           } catch (err) {
             console.warn(`⚠ Keep-alive ping failed: ${err.message}`);
           }
         }, PING_INTERVAL);
-        console.log(`✓ Keep-alive started — pinging ${SITE_URL} every 14 minutes`);
+        console.log(`✓ Keep-alive started - pinging ${SITE_URL} every 14 minutes`);
       }, 30000);
     }
   });

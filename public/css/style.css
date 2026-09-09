@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════
-   VIPLINE TECHNOLOGIES — WORLD CLASS CSS
+   VIPLINE TECHNOLOGIES - WORLD CLASS CSS
    ══════════════════════════════════════════════ */
 
 /* ── DESIGN TOKENS ─────────────────────────── */
@@ -1432,7 +1432,7 @@ select, input, textarea { font-family: inherit; }
   .hamburger { display: flex; }
   .nav-container { padding: 0 16px; gap: 0; justify-content: space-between; }
 
-  /* Mobile Menu — full screen vertical stack */
+  /* Mobile Menu - full screen vertical stack */
   .mobile-menu {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -1522,7 +1522,7 @@ select, input, textarea { font-family: inherit; }
   .about-img-wrap { aspect-ratio: 1; }
   .about-glow-box { width: 180px; height: 180px; }
   .about-logo-big { font-size: 2.5rem; }
-  /* Hide floating cards on mobile — they overlap */
+  /* Hide floating cards on mobile - they overlap */
   .about-card-float { display: none; }
   /* Keep only ring 1 */
   .ring-2, .ring-3 { display: none; }

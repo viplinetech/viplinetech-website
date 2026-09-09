@@ -172,7 +172,7 @@ async function initSchema() {
 
   // Backfill SEO settings keys for installs seeded before these fields existed
   const seoDefaults = [
-    ['seo_title', 'ViplineTech | Software Development & Web Design Company – Nigeria, Africa & Worldwide'],
+    ['seo_title', 'ViplineTech | Software Development & Web Design Company - Nigeria, Africa & Worldwide'],
     ['seo_keywords', 'software development company Nigeria, web design agency Nigeria, mobile app development Nigeria, custom software development Africa, website design company Africa, ecommerce development company Nigeria, UI UX design agency, digital marketing agency Nigeria, SEO company Nigeria, software development company worldwide, app developers Nigeria, tech company Lagos, tech company Abuja, custom software development company, web development services worldwide, ViplineTech, Vipline Technologies'],
     ['og_image_url', 'https://www.viplinetech.com/og-image.jpg'],
     ['twitter_image_url', 'https://www.viplinetech.com/og-image.jpg'],
@@ -202,7 +202,7 @@ async function get(sql, params = []) {
 }
 
 function saveDb() {
-  // No-op for Turso — data is saved automatically in the cloud
+  // No-op for Turso - data is saved automatically in the cloud
   return Promise.resolve();
 }
 

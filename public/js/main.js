@@ -83,7 +83,7 @@ async function loadSettings() {
         const existing = document.getElementById('navLogoImg');
         if (existing) { existing.src = img.src; }
         else { mark.innerHTML = ''; mark.appendChild(img); }
-        // Hide the text — logo image already has the name inside it
+        // Hide the text - logo image already has the name inside it
         if (logoText) logoText.style.display = 'none';
         // Make the mark full width of the logo area
         if (mark) mark.style.display = 'flex';
@@ -560,7 +560,7 @@ function openPfModal(index) {
   pfIndex = ((index % pfItems.length) + pfItems.length) % pfItems.length;
   const item = pfItems[pfIndex];
 
-  // Thumbnail — real image or gradient placeholder
+  // Thumbnail - real image or gradient placeholder
   const thumb = document.getElementById('pfModalThumb');
   if (item.image_url) {
     thumb.innerHTML = `<div class="portfolio-real-img" role="img" aria-label="${item.title.replace(/"/g,'&quot;')}" style="background-image:url('${item.image_url}');min-height:320px;border-radius:var(--radius-xl) 0 0 var(--radius-xl)"></div>`;
@@ -706,7 +706,7 @@ const yearEl=document.getElementById('footerYear');
 if(yearEl)yearEl.textContent=new Date().getFullYear();
 
 // ── SMOOTH SCROLL ─────────────────────────────
-// ── SMOOTH SCROLL (event delegation — works for dynamic content too) ──
+// ── SMOOTH SCROLL (event delegation - works for dynamic content too) ──
 document.addEventListener('click', e => {
   const link = e.target.closest('a[href^="#"]');
   if (!link) return;
@@ -759,7 +759,7 @@ document.addEventListener('click', e => {
   const _print = window.print;
   window.print = function() { return false; };
 
-  // 7. DevTools detection removed — caused false triggers on Chrome mobile
+  // 7. DevTools detection removed - caused false triggers on Chrome mobile
 
   // 8. Disable image dragging
   document.querySelectorAll('img').forEach(img => {
