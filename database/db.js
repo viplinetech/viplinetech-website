@@ -41,7 +41,14 @@ async function initSchema() {
       description TEXT NOT NULL,
       category TEXT DEFAULT 'General',
       image_url TEXT,
+      gallery TEXT,
       link TEXT,
+      client TEXT,
+      project_year TEXT,
+      services TEXT,
+      challenge TEXT,
+      solution TEXT,
+      slug TEXT,
       order_index INTEGER DEFAULT 0,
       active INTEGER DEFAULT 1,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -184,6 +191,39 @@ async function initSchema() {
       args: [key, value]
     });
   }
+
+  // ── Migrate the portfolio table for installs created before the
+  //    multi-screenshot / case-study fields existed ──
+  const pInfo = await client.execute('PRAGMA table_info(portfolio)');
+  const pCols = new Set(pInfo.rows.map(r => r.name));
+  const pWanted = {
+    gallery: 'TEXT', client: 'TEXT', project_year: 'TEXT',
+    services: 'TEXT', challenge: 'TEXT', solution: 'TEXT', slug: 'TEXT',
+  };
+  for (const [name, type] of Object.entries(pWanted)) {
+    if (!pCols.has(name)) {
+      await client.execute(`ALTER TABLE portfolio ADD COLUMN ${name} ${type}`);
+    }
+  }
+
+  // Backfill slugs for any project that does not have one yet
+  const noSlug = await client.execute("SELECT id, title FROM portfolio WHERE slug IS NULL OR slug = ''");
+  for (const row of noSlug.rows) {
+    await client.execute({
+      sql: 'UPDATE portfolio SET slug = ? WHERE id = ?',
+      args: [slugify(row.title) || String(row.id), row.id],
+    });
+  }
+}
+
+// ── SLUGIFY ───────────────────────────────────
+function slugify(str) {
+  return String(str || '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
 }
 
 async function query(sql, params = []) {
@@ -206,4 +246,4 @@ function saveDb() {
   return Promise.resolve();
 }
 
-module.exports = { getDb, query, run, get, saveDb };
+module.exports = { getDb, query, run, get, saveDb, slugify };

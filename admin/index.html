@@ -725,12 +725,18 @@
         </select>
       </div>
       <div class="form-group"><label>Order</label><input type="number" id="portfolioOrder" value="0" /></div>
-      <div class="form-group full"><label>Description *</label><textarea id="portfolioDesc" rows="4" required></textarea></div>
+      <div class="form-group full"><label>Description * <span style="color:var(--text-2);font-weight:400">(short summary shown on the card and at the top of the project page)</span></label><textarea id="portfolioDesc" rows="3" required></textarea></div>
       <div class="form-group full"><label>Live Project Link</label><input type="url" id="portfolioLink" placeholder="https://" /></div>
+
+      <div class="form-group"><label>Client</label><input type="text" id="portfolioClient" placeholder="e.g. Okafor Trading Ltd" /></div>
+      <div class="form-group"><label>Year</label><input type="text" id="portfolioYear" placeholder="e.g. 2026" /></div>
+      <div class="form-group full"><label>Services Used <span style="color:var(--text-2);font-weight:400">(comma separated)</span></label><input type="text" id="portfolioServices" placeholder="e.g. UI/UX Design, Web Development, SEO" /></div>
+      <div class="form-group full"><label>The Challenge <span style="color:var(--text-2);font-weight:400">(optional - what problem did the client have?)</span></label><textarea id="portfolioChallenge" rows="3"></textarea></div>
+      <div class="form-group full"><label>Our Solution <span style="color:var(--text-2);font-weight:400">(optional - what did you build and how?)</span></label><textarea id="portfolioSolution" rows="3"></textarea></div>
 
       <!-- Image upload section -->
       <div class="form-group full" style="grid-column:1/-1">
-        <label>Project Image</label>
+        <label>Cover Image <span style="color:var(--text-2);font-weight:400">(main image shown on the portfolio card)</span></label>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px">
           <!-- Option A: Upload from device -->
           <div style="border:1px solid var(--border);border-radius:10px;padding:16px;background:rgba(255,255,255,0.02)">
@@ -756,6 +762,18 @@
             <button type="button" onclick="clearPortfolioImage()" style="position:absolute;top:-8px;right:-8px;width:24px;height:24px;background:#EF4444;border:none;border-radius:50%;color:white;font-size:0.7rem;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-times"></i></button>
           </div>
         </div>
+      </div>
+
+      <!-- Screenshots / gallery -->
+      <div class="form-group full" style="grid-column:1/-1">
+        <label>Screenshots <span style="color:var(--text-2);font-weight:400">(extra images shown in the gallery on the project page)</span></label>
+        <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap">
+          <label for="portfolioGalleryFiles" class="btn-outline" style="cursor:pointer;font-size:0.82rem"><i class="fas fa-plus"></i> Add images from device</label>
+          <input type="file" id="portfolioGalleryFiles" accept="image/*" multiple style="display:none" />
+          <input type="url" id="portfolioGalleryUrl" placeholder="Or paste an image URL and press Enter" style="flex:1;min-width:220px;padding:8px 12px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.82rem;outline:none" />
+        </div>
+        <p style="font-size:0.72rem;color:var(--text-2);margin-top:6px">Each image under 2MB. Drag thumbnails to reorder is not supported yet - add them in the order you want.</p>
+        <div id="portfolioGalleryPreview" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px"></div>
       </div>
 
       <div class="form-group"><label>Status</label><select id="portfolioActive"><option value="1">Active</option><option value="0">Inactive</option></select></div>
@@ -1022,14 +1040,26 @@ function openPortfolioModal(p) {
   document.getElementById('portfolioOrder').value = p?.order_index ?? 0;
   document.getElementById('portfolioDesc').value = p?.description || '';
   document.getElementById('portfolioLink').value = p?.link || '';
+  document.getElementById('portfolioClient').value = p?.client || '';
+  document.getElementById('portfolioYear').value = p?.project_year || '';
+  document.getElementById('portfolioServices').value = p?.services || '';
+  document.getElementById('portfolioChallenge').value = p?.challenge || '';
+  document.getElementById('portfolioSolution').value = p?.solution || '';
   document.getElementById('portfolioActive').value = p?.active ?? 1;
   document.getElementById('portfolioImageUrl').value = '';
-  // Show existing image if any
+  // Show existing cover image if any
   if (p?.image_url) {
     showImagePreview(p.image_url);
   } else {
     clearPortfolioImage();
   }
+  // Load existing gallery
+  try {
+    galleryImages = Array.isArray(p?.gallery) ? p.gallery.slice()
+      : (p?.gallery ? JSON.parse(p.gallery) : []);
+  } catch (e) { galleryImages = []; }
+  if (!Array.isArray(galleryImages)) galleryImages = [];
+  renderGalleryPreview();
   openModal('portfolioModal');
 }
 function editPortfolio(p) { openPortfolioModal(p); }
@@ -1091,6 +1121,38 @@ document.getElementById('portfolioImageUrl')?.addEventListener('blur', function(
   }
 });
 
+// ── PORTFOLIO GALLERY (multiple screenshots) ──
+let galleryImages = [];
+function renderGalleryPreview() {
+  const wrap = document.getElementById('portfolioGalleryPreview');
+  if (!wrap) return;
+  wrap.innerHTML = galleryImages.map((src, i) => `
+    <div style="position:relative;width:110px;height:74px;border-radius:8px;overflow:hidden;border:1px solid var(--border)">
+      <img src="${src}" alt="Screenshot ${i+1}" style="width:100%;height:100%;object-fit:cover;display:block" />
+      <button type="button" onclick="removeGalleryImage(${i})" style="position:absolute;top:2px;right:2px;width:20px;height:20px;background:#EF4444;border:none;border-radius:50%;color:#fff;font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center"><i class="fas fa-times"></i></button>
+    </div>`).join('');
+}
+function removeGalleryImage(i) { galleryImages.splice(i, 1); renderGalleryPreview(); }
+function addGalleryImage(src) {
+  if (src && !galleryImages.includes(src)) { galleryImages.push(src); renderGalleryPreview(); }
+}
+document.getElementById('portfolioGalleryFiles')?.addEventListener('change', function() {
+  Array.from(this.files || []).forEach(file => {
+    if (file.size > 2 * 1024 * 1024) { alert(`"${file.name}" is over 2MB and was skipped`); return; }
+    const reader = new FileReader();
+    reader.onload = e => addGalleryImage(e.target.result);
+    reader.readAsDataURL(file);
+  });
+  this.value = '';
+});
+document.getElementById('portfolioGalleryUrl')?.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const url = this.value.trim();
+    if (url) { addGalleryImage(url); this.value = ''; }
+  }
+});
+
 async function savePortfolio() {
   const id = document.getElementById('portfolioId').value;
   const imageData = document.getElementById('portfolioImageData').value;
@@ -1101,6 +1163,12 @@ async function savePortfolio() {
     description: document.getElementById('portfolioDesc').value,
     link: document.getElementById('portfolioLink').value,
     image_url: imageData || null,
+    gallery: galleryImages,
+    client: document.getElementById('portfolioClient').value,
+    project_year: document.getElementById('portfolioYear').value,
+    services: document.getElementById('portfolioServices').value,
+    challenge: document.getElementById('portfolioChallenge').value,
+    solution: document.getElementById('portfolioSolution').value,
     active: +document.getElementById('portfolioActive').value
   };
   const r = id ? await api('PUT', '/admin/portfolio/' + id, data) : await api('POST', '/admin/portfolio', data);

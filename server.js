@@ -61,9 +61,118 @@ async function renderIndex(req, res) {
 
 app.get('/', renderIndex);
 
-// ── PORTFOLIO PAGE ──────────────────────────────
+// ── PORTFOLIO LISTING PAGE ──────────────────────
 app.get('/portfolio', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portfolio.html'));
+});
+
+// ── PORTFOLIO PROJECT DETAIL PAGE (server-rendered for SEO) ──
+const detailTemplatePath = path.join(__dirname, 'public', 'portfolio-detail.html');
+
+function projectImages(p) {
+  let gallery = [];
+  try { gallery = JSON.parse(p.gallery || '[]'); } catch { gallery = []; }
+  const all = [p.image_url, ...gallery].filter(x => typeof x === 'string' && x.trim());
+  return [...new Set(all)];
+}
+
+function buildProjectContent(p) {
+  const images = projectImages(p);
+  const cover = images[0] || '';
+  const services = (p.services || '').split(',').map(s => s.trim()).filter(Boolean);
+
+  const galleryHtml = images.length
+    ? `<div class="pd-gallery">
+        <figure class="pd-gallery-main">
+          <img id="pdMainImage" src="${escapeHtml(images[0])}" alt="${escapeHtml(p.title)} screenshot" />
+        </figure>
+        ${images.length > 1 ? `<div class="pd-thumbs" role="list">
+          ${images.map((src, i) => `<button class="pd-thumb${i === 0 ? ' active' : ''}" data-src="${escapeHtml(src)}" aria-label="View screenshot ${i + 1}"><img src="${escapeHtml(src)}" alt="${escapeHtml(p.title)} screenshot ${i + 1}" loading="lazy" /></button>`).join('')}
+        </div>` : ''}
+      </div>`
+    : `<div class="pd-gallery pd-gallery-empty"><i class="fas fa-image" aria-hidden="true"></i><span>Screenshots coming soon</span></div>`;
+
+  const metaRows = [
+    p.client && ['Client', escapeHtml(p.client)],
+    p.project_year && ['Year', escapeHtml(p.project_year)],
+    p.category && ['Category', escapeHtml(p.category)],
+    services.length && ['Services', services.map(escapeHtml).join(', ')],
+    p.link && ['Live site', `<a href="${escapeHtml(p.link)}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.link.replace(/^https?:\/\//, ''))}</a>`],
+  ].filter(Boolean);
+
+  const section = (title, body) => body
+    ? `<div class="pd-block"><h2>${title}</h2><p>${escapeHtml(body).replace(/\n/g, '<br>')}</p></div>`
+    : '';
+
+  return `
+    <nav class="pf-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      <a href="/portfolio">Portfolio</a>
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      <span>${escapeHtml(p.title)}</span>
+    </nav>
+
+    <header class="pd-header">
+      <div class="section-eyebrow">${escapeHtml(p.category || 'Project')}</div>
+      <h1>${escapeHtml(p.title)}</h1>
+      <p class="pd-lead">${escapeHtml(p.description)}</p>
+      ${p.link ? `<a href="${escapeHtml(p.link)}" class="btn-primary" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt" aria-hidden="true"></i> Visit Live Project</a>` : ''}
+    </header>
+
+    ${galleryHtml}
+
+    <div class="pd-body">
+      <div class="pd-content">
+        ${section('The Challenge', p.challenge)}
+        ${section('Our Solution', p.solution)}
+        ${!p.challenge && !p.solution ? `<div class="pd-block"><h2>About This Project</h2><p>${escapeHtml(p.description).replace(/\n/g, '<br>')}</p></div>` : ''}
+      </div>
+      ${metaRows.length ? `<aside class="pd-meta">
+        <h3>Project Details</h3>
+        <dl>${metaRows.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
+      </aside>` : ''}
+    </div>
+
+    <div class="pd-cta">
+      <h2>Want something like this?</h2>
+      <p>Let's talk about your project and how we can help bring it to life.</p>
+      <a href="/#contact" class="btn-primary">Start a Conversation <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      <a href="/portfolio" class="btn-ghost">Back to Portfolio</a>
+    </div>`.trim();
+}
+
+app.get('/portfolio/:slug', async (req, res, next) => {
+  try {
+    const { query } = require('./database/db');
+    const slug = String(req.params.slug || '').toLowerCase();
+    let rows = await query('SELECT * FROM portfolio WHERE slug = ? AND active = 1 LIMIT 1', [slug]);
+    if (!rows.length && /^\d+$/.test(slug)) {
+      rows = await query('SELECT * FROM portfolio WHERE id = ? AND active = 1 LIMIT 1', [slug]);
+    }
+    if (!rows.length) return next(); // fall through to catch-all / index
+
+    const p = rows[0];
+    const images = projectImages(p);
+    const ogImage = images[0] || 'https://www.viplinetech.com/og-image.jpg';
+    const desc = (p.description || '').slice(0, 200);
+    const title = `${p.title} | ViplineTech Portfolio`;
+    const canonical = `https://www.viplinetech.com/portfolio/${p.slug || p.id}`;
+
+    let html = fs.readFileSync(detailTemplatePath, 'utf8');
+    html = html
+      .replace(/\{\{TITLE\}\}/g, escapeHtml(title))
+      .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml(desc))
+      .replace(/\{\{OG_IMAGE\}\}/g, escapeHtml(ogImage))
+      .replace(/\{\{CANONICAL\}\}/g, escapeHtml(canonical))
+      .replace('{{PROJECT_CONTENT}}', buildProjectContent(p));
+
+    res.set('Content-Type', 'text/html');
+    res.send(html);
+  } catch (err) {
+    console.error('portfolio detail error:', err.message);
+    next();
+  }
 });
 
 // ── ROBOTS.TXT & SITEMAP.XML ────────────────────

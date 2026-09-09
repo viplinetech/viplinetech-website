@@ -55,19 +55,40 @@ router.get('/portfolio', async (req, res) => {
   const { getDb, query } = db(); await getDb();
   res.json(await query('SELECT * FROM portfolio ORDER BY order_index'));
 });
+// Normalise a gallery value (array or JSON string) into a clean JSON array string
+function normalizeGallery(g) {
+  let arr = g;
+  if (typeof g === 'string') { try { arr = JSON.parse(g); } catch { arr = []; } }
+  if (!Array.isArray(arr)) arr = [];
+  return JSON.stringify(arr.filter(x => typeof x === 'string' && x.trim()).map(x => x.trim()));
+}
+
 router.post('/portfolio', async (req, res) => {
-  const { getDb, run } = db(); await getDb();
-  const { title, description, category, link, image_url, order_index, active } = req.body;
-  if (!title || !description) return res.status(400).json({ success: false, message: 'Title and description required' });
-  await run('INSERT INTO portfolio (title,description,category,link,image_url,order_index,active) VALUES (?,?,?,?,?,?,?)',
-    [title, description, category||'General', link||null, image_url||null, order_index||0, active??1]);
+  const { getDb, run, slugify } = db(); await getDb();
+  const b = req.body;
+  if (!b.title || !b.description) return res.status(400).json({ success: false, message: 'Title and description required' });
+  const slug = slugify(b.slug || b.title) || String(Date.now());
+  await run(
+    `INSERT INTO portfolio
+       (title,description,category,link,image_url,gallery,client,project_year,services,challenge,solution,slug,order_index,active)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    [b.title, b.description, b.category || 'General', b.link || null, b.image_url || null,
+     normalizeGallery(b.gallery), b.client || null, b.project_year || null, b.services || null,
+     b.challenge || null, b.solution || null, slug, b.order_index || 0, b.active ?? 1]);
   res.json({ success: true });
 });
 router.put('/portfolio/:id', async (req, res) => {
-  const { getDb, run } = db(); await getDb();
-  const { title, description, category, link, image_url, order_index, active } = req.body;
-  await run('UPDATE portfolio SET title=?,description=?,category=?,link=?,image_url=?,order_index=?,active=? WHERE id=?',
-    [title, description, category, link||null, image_url||null, order_index||0, active??1, req.params.id]);
+  const { getDb, run, slugify } = db(); await getDb();
+  const b = req.body;
+  const slug = slugify(b.slug || b.title) || String(req.params.id);
+  await run(
+    `UPDATE portfolio SET
+       title=?,description=?,category=?,link=?,image_url=?,gallery=?,client=?,project_year=?,
+       services=?,challenge=?,solution=?,slug=?,order_index=?,active=?
+     WHERE id=?`,
+    [b.title, b.description, b.category, b.link || null, b.image_url || null,
+     normalizeGallery(b.gallery), b.client || null, b.project_year || null, b.services || null,
+     b.challenge || null, b.solution || null, slug, b.order_index || 0, b.active ?? 1, req.params.id]);
   res.json({ success: true });
 });
 router.delete('/portfolio/:id', async (req, res) => {

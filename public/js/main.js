@@ -354,7 +354,7 @@ async function loadPortfolio() {
     pfItems = items;
 
     grid.innerHTML = items.map((item, i) => `
-      <div class="portfolio-item" data-category="${item.category.toLowerCase()}" data-aos="fade-up" data-aos-delay="${(i%3)*100}" style="cursor:pointer">
+      <a class="portfolio-item" href="/portfolio/${encodeURIComponent(item.slug || item.id)}" data-category="${item.category.toLowerCase()}" data-aos="fade-up" data-aos-delay="${(i%3)*100}" style="cursor:pointer">
         <div class="portfolio-thumb">
           ${item.image_url
             ? `<div class="portfolio-real-img" role="img" aria-label="${item.title.replace(/"/g,'&quot;')}" style="background-image:url('${item.image_url}')"></div>`
@@ -364,13 +364,11 @@ async function loadPortfolio() {
             <div class="portfolio-overlay-content">
               <span class="portfolio-cat">${esc(item.category)}</span>
               <h4>${esc(item.title)}</h4>
-              <p class="pf-click-hint"><i class="fas fa-expand-alt"></i> Click to view details</p>
+              <p class="pf-click-hint"><i class="fas fa-expand-alt"></i> View project</p>
             </div>
           </div>
         </div>
-      </div>`).join('');
-
-    initPortfolioClicks();
+      </a>`).join('');
   } catch(e) { console.warn('Portfolio load failed:', e); }
 }
 

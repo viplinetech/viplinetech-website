@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <script>
+    try { document.documentElement.setAttribute('data-theme', localStorage.getItem('vipline-theme') || 'dark'); } catch (e) {}
+    document.addEventListener('touchmove', function(e){ if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+    let lastTap = 0;
+    document.addEventListener('touchend', function(e){ const now = Date.now(); if (now - lastTap < 300) e.preventDefault(); lastTap = now; }, { passive: false });
+  </script>
+
+  <title>{{TITLE}}</title>
+  <meta name="description" content="{{DESCRIPTION}}" />
+  <meta name="author" content="Vipline Technologies Limited" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#050A14" />
+  <link rel="canonical" href="{{CANONICAL}}" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="{{CANONICAL}}" />
+  <meta property="og:site_name" content="Vipline Technologies Limited" />
+  <meta property="og:title" content="{{TITLE}}" />
+  <meta property="og:description" content="{{DESCRIPTION}}" />
+  <meta property="og:image" content="{{OG_IMAGE}}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{TITLE}}" />
+  <meta name="twitter:description" content="{{DESCRIPTION}}" />
+  <meta name="twitter:image" content="{{OG_IMAGE}}" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
+  <link rel="shortcut icon" href="/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="/css/style.css" />
+
+  <style>
+    .pd-wrap { padding: 150px 0 110px; }
+    .pd-wrap .container { max-width: 1080px; }
+    .pd-header { margin: 24px 0 34px; }
+    .pd-header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.08; font-weight: 800; margin: 12px 0 16px;
+    }
+    .pd-lead {
+      color: var(--text-secondary);
+      font-size: clamp(1rem, 2.2vw, 1.18rem);
+      line-height: 1.7; max-width: 760px; margin-bottom: 22px;
+    }
+    .pd-header .btn-primary { display: inline-flex; align-items: center; gap: 8px; }
+
+    /* Gallery */
+    .pd-gallery { margin: 0 0 50px; }
+    .pd-gallery-main {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      box-shadow: var(--shadow-card);
+    }
+    .pd-gallery-main img {
+      width: 100%; display: block; max-height: 620px; object-fit: contain;
+      background: var(--bg-secondary); cursor: zoom-in;
+    }
+    .pd-thumbs {
+      display: flex; gap: 12px; margin-top: 14px;
+      overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin;
+    }
+    .pd-thumb {
+      flex: 0 0 auto; width: 110px; height: 72px; padding: 0;
+      border-radius: 10px; overflow: hidden; cursor: pointer;
+      border: 2px solid var(--border); background: var(--bg-secondary);
+      transition: border-color var(--transition), transform var(--transition);
+    }
+    .pd-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pd-thumb:hover { transform: translateY(-2px); }
+    .pd-thumb.active { border-color: var(--accent-cyan); }
+    .pd-gallery-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; padding: 80px 20px; border: 1px dashed var(--border);
+      border-radius: var(--radius-lg); color: var(--text-secondary);
+    }
+    .pd-gallery-empty i { font-size: 2.4rem; color: var(--accent-blue); }
+
+    /* Body layout */
+    .pd-body { display: grid; grid-template-columns: 1fr 300px; gap: 48px; align-items: start; }
+    .pd-block { margin-bottom: 30px; }
+    .pd-block h2 {
+      font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .pd-block p { color: var(--text-secondary); line-height: 1.8; font-size: 1.02rem; }
+    .pd-meta {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 24px; position: sticky; top: 100px;
+    }
+    .pd-meta h3 {
+      font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); margin-bottom: 16px;
+    }
+    .pd-meta dl { display: grid; gap: 14px; }
+    .pd-meta dt { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 2px; }
+    .pd-meta dd { font-size: 0.95rem; color: var(--text-primary); word-break: break-word; }
+    .pd-meta dd a { color: var(--accent-cyan); }
+
+    /* CTA */
+    .pd-cta {
+      margin-top: 64px; padding: 48px 32px; text-align: center;
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      background: radial-gradient(60% 100% at 50% 0%, rgba(0,102,255,0.14), transparent 70%), var(--bg-card);
+    }
+    .pd-cta h2 { font-family: 'Syne', sans-serif; font-size: 1.7rem; font-weight: 800; margin-bottom: 10px; }
+    .pd-cta p { color: var(--text-secondary); margin-bottom: 22px; }
+    .pd-cta .btn-primary, .pd-cta .btn-ghost { display: inline-flex; align-items: center; gap: 8px; margin: 6px; }
+
+    /* Lightbox */
+    .pd-lightbox {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.92); display: none;
+      align-items: center; justify-content: center; padding: 40px;
+      cursor: zoom-out;
+    }
+    .pd-lightbox.open { display: flex; }
+    .pd-lightbox img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+    .pd-lightbox-close {
+      position: absolute; top: 24px; right: 28px; font-size: 1.6rem;
+      color: #fff; background: none; border: none; cursor: pointer;
+    }
+
+    @media (max-width: 860px) {
+      .pd-body { grid-template-columns: 1fr; gap: 28px; }
+      .pd-meta { position: static; }
+    }
+    @media (max-width: 768px) {
+      .pd-wrap { padding: 120px 0 70px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="preloader" role="status" aria-label="Loading">
+  <div class="preloader-inner">
+    <div class="preloader-logo"><span class="logo-v">Vipline</span><span class="logo-rest">Tech</span></div>
+    <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    <p class="preloader-text">Loading Project...</p>
+  </div>
+</div>
+
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+
+<header>
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="nav-container">
+    <a href="/" class="nav-logo" aria-label="ViplineTech Home">
+      <div class="nav-logo-mark">
+        <svg width="38" height="38" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs><linearGradient id="nl" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0066FF"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs>
+          <rect width="52" height="52" rx="13" fill="url(#nl)"/>
+          <polyline points="12,14 26,41 40,14" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="26" cy="41.5" r="3.2" fill="white" opacity="0.92"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-main">ViplineTech</span>
+        <span class="logo-sub">Digital Solutions</span>
+      </div>
+    </a>
+
+    <ul class="nav-links" id="navLinks" role="menubar">
+      <li role="none"><a href="/" class="nav-link" role="menuitem">Home</a></li>
+      <li role="none"><a href="/#about" class="nav-link" role="menuitem">About</a></li>
+      <li role="none"><a href="/#services" class="nav-link" role="menuitem">Services</a></li>
+      <li role="none"><a href="/portfolio" class="nav-link active" role="menuitem">Portfolio</a></li>
+      <li role="none"><a href="/#testimonials" class="nav-link" role="menuitem">Clients</a></li>
+      <li role="none"><a href="/#contact" class="nav-link" role="menuitem">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark and light mode">
+        <div class="toggle-track">
+          <div class="toggle-icons">
+            <i class="fas fa-sun sun-icon" aria-hidden="true"></i>
+            <i class="fas fa-moon moon-icon" aria-hidden="true"></i>
+          </div>
+          <div class="toggle-thumb"></div>
+        </div>
+      </button>
+      <a href="/#contact" class="btn-nav-cta">Get in Touch</a>
+      <button class="hamburger" id="hamburger" aria-label="Open mobile menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+</header>
+
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+  <a href="/" class="mobile-link">Home</a>
+  <a href="/#about" class="mobile-link">About</a>
+  <a href="/#services" class="mobile-link">Services</a>
+  <a href="/portfolio" class="mobile-link">Portfolio</a>
+  <a href="/#testimonials" class="mobile-link">Clients</a>
+  <a href="/#contact" class="mobile-link">Contact</a>
+  <a href="/#contact" class="btn-primary">Get in Touch</a>
+</div>
+
+<main>
+<article class="pd-wrap">
+  <div class="container">
+    {{PROJECT_CONTENT}}
+  </div>
+</article>
+</main>
+
+<footer class="footer" role="contentinfo">
+  <div class="footer-top">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="nav-logo-mark">
+              <svg width="44" height="44" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs><linearGradient id="fl" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0066FF"/><stop offset="100%" stop-color="#00D4FF"/></linearGradient></defs>
+                <rect width="52" height="52" rx="13" fill="url(#fl)"/>
+                <polyline points="12,14 26,41 40,14" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="26" cy="41.5" r="3.2" fill="white" opacity="0.92"/>
+              </svg>
+            </div>
+            <div class="logo-text">
+              <span class="logo-main">ViplineTech</span>
+              <span class="logo-sub">Digital Solutions</span>
+            </div>
+          </div>
+          <p>A CAC-registered Nigerian software development and web design company delivering world-class custom software, mobile apps, website design and complete digital solutions to clients across Nigeria, Africa and worldwide.</p>
+          <div class="footer-badge">
+            <i class="fas fa-certificate" aria-hidden="true"></i>
+            <span>CAC Registered · RC 9644291</span>
+          </div>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/#about">About Us</a></li>
+            <li><a href="/#services">Services</a></li>
+            <li><a href="/portfolio">Portfolio</a></li>
+            <li><a href="/#testimonials">Testimonials</a></li>
+            <li><a href="/#contact">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Our Services</h4>
+          <ul id="footerServicesList">
+            <li><a href="/#services">Custom Software Engineering</a></li>
+            <li><a href="/#services">Mobile App Development</a></li>
+            <li><a href="/#services">Website Design &amp; Development</a></li>
+            <li><a href="/#services">UI/UX &amp; Product Design</a></li>
+            <li><a href="/#services">Ecommerce Solutions</a></li>
+            <li><a href="/#services">Digital Marketing &amp; SEO</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact-col">
+          <h4>Contact Info</h4>
+          <div class="footer-contact-item">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+            <span data-setting="address">House 3, Cherry Drive, Ceedarwood Estate, SARS Road, Nigeria</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-phone-alt" aria-hidden="true"></i>
+            <a href="tel:+2347039369336" data-setting="phone">+234 703 939 6336</a>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:viplinetech@gmail.com" data-setting="email">viplinetech@gmail.com</a>
+          </div>
+          <div class="footer-socials">
+            <a href="#" data-setting="facebook" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" data-setting="twitter" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+            <a href="#" data-setting="instagram" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" data-setting="linkedin" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+            <a href="https://wa.me/2347039369336" data-setting="whatsapp" aria-label="WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <p>© <span id="footerYear"></span> ViplineTech (<span data-setting="company_name">Vipline Technologies Limited</span>). All rights reserved. | RC 9644291</p>
+      <div class="footer-bottom-links">
+        <a href="/#">Privacy Policy</a>
+        <a href="/#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/2347039369336" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" data-setting="whatsapp">
+  <i class="fab fa-whatsapp" aria-hidden="true"></i>
+  <span class="whatsapp-tooltip">Chat on WhatsApp</span>
+</a>
+
+<button id="backToTop" class="back-to-top" aria-label="Back to top">
+  <i class="fas fa-chevron-up" aria-hidden="true"></i>
+</button>
+
+<div class="pd-lightbox" id="pdLightbox" role="dialog" aria-modal="true" aria-label="Screenshot preview">
+  <button class="pd-lightbox-close" id="pdLightboxClose" aria-label="Close">&times;</button>
+  <img id="pdLightboxImg" src="" alt="" />
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script src="/js/main.js"></script>
+<script>
+  // ── Screenshot gallery + lightbox ──
+  (function () {
+    var main = document.getElementById('pdMainImage');
+    var thumbs = Array.prototype.slice.call(document.querySelectorAll('.pd-thumb'));
+    var lightbox = document.getElementById('pdLightbox');
+    var lightboxImg = document.getElementById('pdLightboxImg');
+    var lightboxClose = document.getElementById('pdLightboxClose');
+
+    thumbs.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var src = btn.getAttribute('data-src');
+        if (main) main.src = src;
+        thumbs.forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+
+    function openLightbox(src) {
+      if (!lightbox || !lightboxImg) return;
+      lightboxImg.src = src;
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      if (!lightbox) return;
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    if (main) main.addEventListener('click', function () { openLightbox(main.src); });
+    if (lightbox) lightbox.addEventListener('click', function (e) { if (e.target !== lightboxClose) closeLightbox(); });
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
+  })();
+</script>
+</body>
+</html>
