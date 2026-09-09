@@ -61,6 +61,11 @@ async function renderIndex(req, res) {
 
 app.get('/', renderIndex);
 
+// ── PORTFOLIO PAGE ──────────────────────────────
+app.get('/portfolio', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'portfolio.html'));
+});
+
 // ── ROBOTS.TXT & SITEMAP.XML ────────────────────
 const AI_CRAWLERS = [
   'GPTBot', 'ChatGPT-User', 'OAI-SearchBot',       // OpenAI / ChatGPT

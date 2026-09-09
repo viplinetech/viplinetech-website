@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <script>
+    // Apply saved theme before paint (avoids light/dark flash)
+    try {
+      document.documentElement.setAttribute('data-theme', localStorage.getItem('vipline-theme') || 'dark');
+    } catch (e) {}
+    // Prevent pinch-to-zoom on mobile
+    document.addEventListener('touchmove', function(e) {
+      if (e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    let lastTap = 0;
+    document.addEventListener('touchend', function(e) {
+      const now = Date.now();
+      if (now - lastTap < 300) e.preventDefault();
+      lastTap = now;
+    }, { passive: false });
+  </script>
+
+  <title>Our Portfolio | ViplineTech – Software, Web, Mobile &amp; Digital Projects</title>
+  <meta name="description" content="Explore the ViplineTech portfolio — custom software, SaaS platforms, mobile apps, website design, ecommerce and digital marketing projects delivered for clients across Nigeria, Africa and worldwide." />
+  <meta name="keywords" content="ViplineTech portfolio, software development projects Nigeria, web design portfolio, mobile app portfolio, SaaS development, ecommerce projects, Vipline Technologies work" />
+  <meta name="author" content="Vipline Technologies Limited" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="theme-color" content="#050A14" />
+  <link rel="canonical" href="https://www.viplinetech.com/portfolio" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.viplinetech.com/portfolio" />
+  <meta property="og:site_name" content="Vipline Technologies Limited" />
+  <meta property="og:title" content="Our Portfolio | ViplineTech" />
+  <meta property="og:description" content="Custom software, SaaS, mobile apps, websites, ecommerce and digital marketing projects by ViplineTech." />
+  <meta property="og:image" content="https://www.viplinetech.com/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Our Portfolio | ViplineTech" />
+  <meta name="twitter:description" content="Custom software, SaaS, mobile apps, websites, ecommerce and digital marketing projects by ViplineTech." />
+  <meta name="twitter:image" content="https://www.viplinetech.com/og-image.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="favicon-16x16.png" sizes="16x16" type="image/png" />
+  <link rel="shortcut icon" href="favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    /* ── PORTFOLIO PAGE HERO ── */
+    .pf-page-hero {
+      position: relative;
+      padding: 180px 0 70px;
+      text-align: center;
+      overflow: hidden;
+      background:
+        radial-gradient(60% 90% at 50% 0%, rgba(0,102,255,0.18), transparent 70%),
+        var(--bg-primary);
+      border-bottom: 1px solid var(--border);
+    }
+    .pf-page-hero .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      -webkit-mask-image: radial-gradient(70% 70% at 50% 0%, #000, transparent 75%);
+      mask-image: radial-gradient(70% 70% at 50% 0%, #000, transparent 75%);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .pf-page-hero .container { position: relative; z-index: 1; }
+    .pf-breadcrumb {
+      display: inline-flex; gap: 8px; align-items: center;
+      font-size: 0.85rem; color: var(--text-secondary);
+      margin-bottom: 20px; letter-spacing: 0.02em;
+    }
+    .pf-breadcrumb a:hover { color: var(--accent-cyan); }
+    .pf-breadcrumb i { font-size: 0.65rem; opacity: 0.6; }
+    .pf-page-hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      line-height: 1.05;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    .pf-page-hero p {
+      max-width: 640px; margin: 0 auto;
+      color: var(--text-secondary);
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      line-height: 1.7;
+    }
+    .pf-page-section { padding: 60px 0 110px; }
+    .pf-empty {
+      text-align: center; padding: 80px 20px;
+      color: var(--text-secondary);
+      grid-column: 1 / -1;
+    }
+    .pf-empty i { font-size: 2.5rem; margin-bottom: 16px; color: var(--accent-blue); display: block; }
+    @media (max-width: 768px) {
+      .pf-page-hero { padding: 140px 0 50px; }
+      .pf-page-section { padding: 40px 0 70px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ PRELOADER ═══════════════════════════ -->
+<div id="preloader" role="status" aria-label="Loading Vipline Technologies">
+  <div class="preloader-inner">
+    <div class="preloader-logo">
+      <span class="logo-v">Vipline</span><span class="logo-rest">Tech</span>
+    </div>
+    <div class="preloader-bar"><div class="preloader-fill"></div></div>
+    <p class="preloader-text">Loading Portfolio...</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ CURSOR ═══════════════════════════ -->
+<div id="cursor-dot" aria-hidden="true"></div>
+<div id="cursor-ring" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════ NAVBAR ═══════════════════════════ -->
+<header>
+<nav id="navbar" role="navigation" aria-label="Main navigation">
+  <div class="nav-container">
+    <a href="/" class="nav-logo" aria-label="ViplineTech Home">
+      <div class="nav-logo-mark">
+        <svg width="38" height="38" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="nl" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0066FF"/>
+              <stop offset="100%" stop-color="#00D4FF"/>
+            </linearGradient>
+          </defs>
+          <rect width="52" height="52" rx="13" fill="url(#nl)"/>
+          <polyline points="12,14 26,41 40,14" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="26" cy="41.5" r="3.2" fill="white" opacity="0.92"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-main">ViplineTech</span>
+        <span class="logo-sub">Digital Solutions</span>
+      </div>
+    </a>
+
+    <ul class="nav-links" id="navLinks" role="menubar">
+      <li role="none"><a href="/" class="nav-link" role="menuitem">Home</a></li>
+      <li role="none"><a href="/#about" class="nav-link" role="menuitem">About</a></li>
+      <li role="none"><a href="/#services" class="nav-link" role="menuitem">Services</a></li>
+      <li role="none"><a href="/portfolio" class="nav-link active" role="menuitem" aria-current="page">Portfolio</a></li>
+      <li role="none"><a href="/#testimonials" class="nav-link" role="menuitem">Clients</a></li>
+      <li role="none"><a href="/#contact" class="nav-link" role="menuitem">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark and light mode">
+        <div class="toggle-track">
+          <div class="toggle-icons">
+            <i class="fas fa-sun sun-icon" aria-hidden="true"></i>
+            <i class="fas fa-moon moon-icon" aria-hidden="true"></i>
+          </div>
+          <div class="toggle-thumb"></div>
+        </div>
+      </button>
+      <a href="/#contact" class="btn-nav-cta">Get in Touch</a>
+      <button class="hamburger" id="hamburger" aria-label="Open mobile menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+</header>
+
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+  <a href="/" class="mobile-link">Home</a>
+  <a href="/#about" class="mobile-link">About</a>
+  <a href="/#services" class="mobile-link">Services</a>
+  <a href="/portfolio" class="mobile-link">Portfolio</a>
+  <a href="/#testimonials" class="mobile-link">Clients</a>
+  <a href="/#contact" class="mobile-link">Contact</a>
+  <a href="/#contact" class="btn-primary">Get in Touch</a>
+</div>
+
+<main>
+<!-- ═══════════════════════════ PAGE HERO ═══════════════════════════ -->
+<section class="pf-page-hero" aria-label="Portfolio introduction">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="container">
+    <nav class="pf-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
+      <span>Portfolio</span>
+    </nav>
+    <h1>Our <span class="gradient-text">Portfolio</span></h1>
+    <p>A complete showcase of the work we deliver — custom software, SaaS platforms, mobile apps, websites, ecommerce and digital marketing projects for clients across Nigeria, Africa and worldwide.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ PORTFOLIO GRID ═══════════════════════════ -->
+<section id="portfolio" class="pf-page-section portfolio-section" aria-labelledby="portfolio-heading">
+  <div class="container">
+    <div class="section-header" data-aos="fade-up" style="margin-bottom:32px">
+      <div class="section-eyebrow">Our Work</div>
+      <h2 id="portfolio-heading" class="section-title">Projects &amp; <span class="gradient-text">Case Studies</span></h2>
+      <p class="section-sub">Filter by category to explore projects in each of our service areas. Click any project to see the details.</p>
+    </div>
+
+    <div class="portfolio-filters" data-aos="fade-up" data-aos-delay="100" role="group" aria-label="Filter portfolio by category">
+      <button class="filter-btn active" data-filter="all">All Projects</button>
+    </div>
+
+    <!-- Portfolio loaded dynamically from admin database -->
+    <div class="portfolio-grid" id="portfolioGrid" aria-label="Portfolio projects">
+      <div class="pf-empty">
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+        Loading projects...
+      </div>
+    </div>
+
+    <div class="portfolio-cta" data-aos="fade-up">
+      <p>Have a project in mind?</p>
+      <a href="/#contact" class="btn-primary">Let's Build Together <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-top">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="nav-logo-mark">
+              <svg width="44" height="44" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="fl" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#0066FF"/>
+                    <stop offset="100%" stop-color="#00D4FF"/>
+                  </linearGradient>
+                </defs>
+                <rect width="52" height="52" rx="13" fill="url(#fl)"/>
+                <polyline points="12,14 26,41 40,14" stroke="white" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="26" cy="41.5" r="3.2" fill="white" opacity="0.92"/>
+              </svg>
+            </div>
+            <div class="logo-text">
+              <span class="logo-main">ViplineTech</span>
+              <span class="logo-sub">Digital Solutions</span>
+            </div>
+          </div>
+          <p>A CAC-registered Nigerian software development and web design company delivering world-class custom software, mobile apps, website design and complete digital solutions to clients across Nigeria, Africa and worldwide.</p>
+          <div class="footer-badge">
+            <i class="fas fa-certificate" aria-hidden="true"></i>
+            <span>CAC Registered · RC 9644291</span>
+          </div>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/#about">About Us</a></li>
+            <li><a href="/#services">Services</a></li>
+            <li><a href="/portfolio">Portfolio</a></li>
+            <li><a href="/#testimonials">Testimonials</a></li>
+            <li><a href="/#contact">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Our Services</h4>
+          <ul id="footerServicesList">
+            <li><a href="/#services">Custom Software Engineering</a></li>
+            <li><a href="/#services">Mobile App Development</a></li>
+            <li><a href="/#services">Website Design &amp; Development</a></li>
+            <li><a href="/#services">UI/UX &amp; Product Design</a></li>
+            <li><a href="/#services">Ecommerce Solutions</a></li>
+            <li><a href="/#services">Digital Marketing &amp; SEO</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-contact-col">
+          <h4>Contact Info</h4>
+          <div class="footer-contact-item">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+            <span data-setting="address">House 3, Cherry Drive, Ceedarwood Estate, SARS Road, Nigeria</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-phone-alt" aria-hidden="true"></i>
+            <a href="tel:+2347039369336" data-setting="phone">+234 703 939 6336</a>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:viplinetech@gmail.com" data-setting="email">viplinetech@gmail.com</a>
+          </div>
+          <div class="footer-socials">
+            <a href="#" data-setting="facebook" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+            <a href="#" data-setting="twitter" aria-label="Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+            <a href="#" data-setting="instagram" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+            <a href="#" data-setting="linkedin" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
+            <a href="https://wa.me/2347039369336" data-setting="whatsapp" aria-label="WhatsApp"><i class="fab fa-whatsapp" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <p>© <span id="footerYear"></span> ViplineTech (<span data-setting="company_name">Vipline Technologies Limited</span>). All rights reserved. | RC 9644291</p>
+      <div class="footer-bottom-links">
+        <a href="/#">Privacy Policy</a>
+        <a href="/#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════ PORTFOLIO MODAL ═══════════════════════════ -->
+<div id="portfolioModal" class="pf-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="pfModalTitle">
+  <div class="pf-modal">
+    <button class="pf-modal-close" id="pfModalClose" aria-label="Close">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+
+    <div class="pf-modal-inner">
+      <div class="pf-modal-visual">
+        <div class="pf-modal-thumb" id="pfModalThumb">
+          <div class="portfolio-placeholder web-bg">
+            <i class="fas fa-globe" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="pf-modal-cat-wrap">
+          <span class="pf-modal-cat" id="pfModalCat">Category</span>
+        </div>
+      </div>
+
+      <div class="pf-modal-content">
+        <h2 class="pf-modal-title" id="pfModalTitle">Project Title</h2>
+        <div class="pf-modal-tags" id="pfModalTags"></div>
+        <p class="pf-modal-desc" id="pfModalDesc">Description goes here.</p>
+        <div class="pf-modal-meta" id="pfModalMeta"></div>
+
+        <div class="pf-modal-actions">
+          <a href="#" id="pfModalVisit" class="btn-primary" target="_blank" rel="noopener noreferrer" style="display:none">
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+            <span>Visit Project</span>
+          </a>
+          <a href="/#contact" class="btn-ghost" id="pfModalDiscuss">
+            <i class="fas fa-comments" aria-hidden="true"></i>
+            <span>Discuss Similar Project</span>
+          </a>
+        </div>
+
+        <div class="pf-modal-nav">
+          <button class="pf-nav-btn" id="pfPrev" aria-label="Previous project">
+            <i class="fas fa-chevron-left" aria-hidden="true"></i> Previous
+          </button>
+          <span class="pf-nav-count" id="pfNavCount">1 / 6</span>
+          <button class="pf-nav-btn" id="pfNext" aria-label="Next project">
+            Next <i class="fas fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a href="https://wa.me/2347039369336" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp" data-setting="whatsapp">
+  <i class="fab fa-whatsapp" aria-hidden="true"></i>
+  <span class="whatsapp-tooltip">Chat on WhatsApp</span>
+</a>
+
+<button id="backToTop" class="back-to-top" aria-label="Back to top">
+  <i class="fas fa-chevron-up" aria-hidden="true"></i>
+</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // ── PORTFOLIO PAGE: send "Discuss Similar Project" to the homepage contact section ──
+  // main.js re-assigns pfModalDiscuss.onclick every time the modal opens, so intercept
+  // in the capture phase before that handler runs.
+  document.getElementById('pfModalDiscuss')?.addEventListener('click', function (e) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    window.location.href = '/#contact';
+  }, true);
+
+  // Safety net: if the grid is still showing the loading state after 6s, show a message.
+  setTimeout(function () {
+    var grid = document.getElementById('portfolioGrid');
+    if (grid && /Loading projects/.test(grid.textContent) && grid.querySelector('.fa-spin')) {
+      grid.innerHTML = '<div class="pf-empty"><i class="fas fa-folder-open" aria-hidden="true"></i>No projects to show yet. Check back soon.</div>';
+    }
+  }, 6000);
+</script>
+</body>
+</html>
