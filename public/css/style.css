@@ -2,8 +2,11 @@
    VIPLINE TECHNOLOGIES - WORLD CLASS CSS
    ══════════════════════════════════════════════ */
 
-/* Registered so the browser can smoothly animate the conic-gradient angle
-   used by the portfolio card's traveling border light (see .portfolio-item::before) */
+/* Registered so browsers can smoothly animate the conic-gradient angle used
+   by the portfolio card's traveling border light (.portfolio-item::after).
+   Rotating the gradient's angle (rather than the masked shape itself) keeps
+   the light ring perfectly aligned to the card's rounded-rectangle edge
+   throughout the sweep. */
 @property --pf-beam-angle {
   syntax: '<angle>';
   inherits: false;
@@ -1089,8 +1092,10 @@ select, input, textarea { font-family: inherit; }
 
 /* Traveling light animation around the card border - a bright arc of the
    brand blue continuously sweeps around the frame. Built as a conic-gradient
-   ring masked down to just the border width, then rotated. */
-.portfolio-item::before {
+   ring masked down to just the border width, then spun with a plain
+   transform (works in every browser - no @property/custom-property
+   animation support required). */
+.portfolio-item::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -1112,10 +1117,8 @@ select, input, textarea { font-family: inherit; }
   animation: pf-beam-spin 5s linear infinite;
 }
 @keyframes pf-beam-spin {
-  to { --pf-beam-angle: 360deg; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .portfolio-item::before { animation: none; }
+  from { --pf-beam-angle: 0deg; }
+  to   { --pf-beam-angle: 360deg; }
 }
 
 .portfolio-thumb {
