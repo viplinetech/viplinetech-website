@@ -1076,10 +1076,10 @@ select, input, textarea { font-family: inherit; }
   position: relative;
   display: flex;
   flex-direction: column;
+  z-index: 0;
   background: var(--pf-card-bg);
   border: 1px solid var(--pf-card-border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
   box-shadow: var(--pf-card-shadow);
   transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
@@ -1090,18 +1090,18 @@ select, input, textarea { font-family: inherit; }
 }
 .portfolio-item.hidden { display: none; }
 
-/* Traveling light animation around the card border - a bright arc of the
-   brand blue continuously sweeps around the frame. Built as a conic-gradient
-   ring masked down to just the border width, then spun with a plain
-   transform (works in every browser - no @property/custom-property
-   animation support required). */
+/* Traveling light animation around the card border - a rotating gradient
+   sits just behind the card (z-index: -1), overhanging its edge by a few
+   pixels. The card's own solid background covers the center, so only a
+   thin ring around the perimeter is visible: a bright arc of brand blue
+   continuously sweeping around the frame. No mask/composite required, so
+   it renders consistently across browsers. */
 .portfolio-item::after {
   content: '';
   position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  padding: 1.5px;
+  inset: -3px;
+  z-index: -1;
+  border-radius: calc(var(--radius-lg) + 3px);
   pointer-events: none;
   background: conic-gradient(from var(--pf-beam-angle, 0deg),
     transparent 0deg,
@@ -1110,10 +1110,6 @@ select, input, textarea { font-family: inherit; }
     var(--pf-beam-bright) 328deg,
     var(--pf-beam-color) 356deg,
     transparent 360deg);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
   animation: pf-beam-spin 5s linear infinite;
 }
 @keyframes pf-beam-spin {
@@ -1125,6 +1121,7 @@ select, input, textarea { font-family: inherit; }
   position: relative;
   aspect-ratio: 4/3;
   overflow: hidden;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--pf-card-border);
 }
