@@ -10,8 +10,23 @@ const PORT = process.env.PORT || 8080;
 
 // ── MIDDLEWARE ─────────────────────────────────
 app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Raised from Express's 100kb default so the admin panel can save projects
+// with a cover image and several base64-encoded screenshots in one request.
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+
+// A request that still exceeds the limit (or is otherwise malformed) gets a
+// clean JSON error instead of Express's default HTML error page, so the
+// admin panel's fetch() calls can always parse the response as JSON.
+app.use((err, req, res, next) => {
+  if (err && (err.type === 'entity.too.large' || err.status === 413)) {
+    return res.status(413).json({ success: false, message: 'Upload too large. Please use smaller images (under ~4MB total) or paste image URLs instead of uploading files.' });
+  }
+  if (err && err.type === 'entity.parse.failed') {
+    return res.status(400).json({ success: false, message: 'Invalid request data.' });
+  }
+  next(err);
+});
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'viplinetech_super_secret_2026_xK9#mP',

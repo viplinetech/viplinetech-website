@@ -64,32 +64,42 @@ function normalizeGallery(g) {
 }
 
 router.post('/portfolio', async (req, res) => {
-  const { getDb, run, slugify } = db(); await getDb();
-  const b = req.body;
-  if (!b.title || !b.description) return res.status(400).json({ success: false, message: 'Title and description required' });
-  const slug = slugify(b.slug || b.title) || String(Date.now());
-  await run(
-    `INSERT INTO portfolio
-       (title,description,category,link,image_url,gallery,client,project_year,services,challenge,solution,slug,order_index,active)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-    [b.title, b.description, b.category || 'General', b.link || null, b.image_url || null,
-     normalizeGallery(b.gallery), b.client || null, b.project_year || null, b.services || null,
-     b.challenge || null, b.solution || null, slug, b.order_index || 0, b.active ?? 1]);
-  res.json({ success: true });
+  try {
+    const { getDb, run, slugify } = db(); await getDb();
+    const b = req.body;
+    if (!b.title || !b.description) return res.status(400).json({ success: false, message: 'Title and description required' });
+    const slug = slugify(b.slug || b.title) || String(Date.now());
+    await run(
+      `INSERT INTO portfolio
+         (title,description,category,link,image_url,gallery,client,project_year,services,challenge,solution,slug,order_index,active)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [b.title, b.description, b.category || 'General', b.link || null, b.image_url || null,
+       normalizeGallery(b.gallery), b.client || null, b.project_year || null, b.services || null,
+       b.challenge || null, b.solution || null, slug, b.order_index || 0, b.active ?? 1]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Save portfolio error:', err.message);
+    res.status(500).json({ success: false, message: 'Could not save the project. ' + (err.message || '') });
+  }
 });
 router.put('/portfolio/:id', async (req, res) => {
-  const { getDb, run, slugify } = db(); await getDb();
-  const b = req.body;
-  const slug = slugify(b.slug || b.title) || String(req.params.id);
-  await run(
-    `UPDATE portfolio SET
-       title=?,description=?,category=?,link=?,image_url=?,gallery=?,client=?,project_year=?,
-       services=?,challenge=?,solution=?,slug=?,order_index=?,active=?
-     WHERE id=?`,
-    [b.title, b.description, b.category, b.link || null, b.image_url || null,
-     normalizeGallery(b.gallery), b.client || null, b.project_year || null, b.services || null,
-     b.challenge || null, b.solution || null, slug, b.order_index || 0, b.active ?? 1, req.params.id]);
-  res.json({ success: true });
+  try {
+    const { getDb, run, slugify } = db(); await getDb();
+    const b = req.body;
+    const slug = slugify(b.slug || b.title) || String(req.params.id);
+    await run(
+      `UPDATE portfolio SET
+         title=?,description=?,category=?,link=?,image_url=?,gallery=?,client=?,project_year=?,
+         services=?,challenge=?,solution=?,slug=?,order_index=?,active=?
+       WHERE id=?`,
+      [b.title, b.description, b.category, b.link || null, b.image_url || null,
+       normalizeGallery(b.gallery), b.client || null, b.project_year || null, b.services || null,
+       b.challenge || null, b.solution || null, slug, b.order_index || 0, b.active ?? 1, req.params.id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Update portfolio error:', err.message);
+    res.status(500).json({ success: false, message: 'Could not save the project. ' + (err.message || '') });
+  }
 });
 router.delete('/portfolio/:id', async (req, res) => {
   const { getDb, run } = db(); await getDb();

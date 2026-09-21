@@ -780,7 +780,7 @@
     </form>
     <div class="modal-footer">
       <button class="btn-outline" onclick="closeModal('portfolioModal')">Cancel</button>
-      <button class="btn-primary" onclick="savePortfolio()"><i class="fas fa-save"></i> Save</button>
+      <button class="btn-primary" id="portfolioSaveBtn" onclick="savePortfolio()"><i class="fas fa-save"></i> Save</button>
     </div>
   </div>
 </div>
@@ -853,9 +853,20 @@
 async function api(method, url, data) {
   const opts = { method, headers: { 'Content-Type': 'application/json' } };
   if (data) opts.body = JSON.stringify(data);
-  const res = await fetch('/api' + url, opts);
+  let res;
+  try {
+    res = await fetch('/api' + url, opts);
+  } catch (e) {
+    return { success: false, message: 'Network error. Check your connection and try again.' };
+  }
   if (res.status === 401) { window.location.href = '/admin/login.html'; return; }
-  return res.json();
+  // The server always replies with JSON, but guard against a proxy/host
+  // error page (HTML) slipping through so a failed save never fails silently.
+  let body;
+  try { body = await res.json(); }
+  catch (e) { return { success: false, message: `Server error (${res.status}). Please try again or use smaller images.` }; }
+  if (!res.ok && body.success === undefined) body.success = false;
+  return body;
 }
 
 // ── PANEL NAVIGATION ──────────────────────────
@@ -1154,13 +1165,20 @@ document.getElementById('portfolioGalleryUrl')?.addEventListener('keydown', func
 });
 
 async function savePortfolio() {
+  const title = document.getElementById('portfolioTitle').value.trim();
+  const description = document.getElementById('portfolioDesc').value.trim();
+  if (!title || !description) {
+    showAlert('alertPortfolio', 'error', 'Title and description are required.');
+    return;
+  }
+
   const id = document.getElementById('portfolioId').value;
   const imageData = document.getElementById('portfolioImageData').value;
   const data = {
-    title: document.getElementById('portfolioTitle').value,
+    title,
     category: document.getElementById('portfolioCategory').value,
     order_index: +document.getElementById('portfolioOrder').value,
-    description: document.getElementById('portfolioDesc').value,
+    description,
     link: document.getElementById('portfolioLink').value,
     image_url: imageData || null,
     gallery: galleryImages,
@@ -1171,9 +1189,26 @@ async function savePortfolio() {
     solution: document.getElementById('portfolioSolution').value,
     active: +document.getElementById('portfolioActive').value
   };
-  const r = id ? await api('PUT', '/admin/portfolio/' + id, data) : await api('POST', '/admin/portfolio', data);
-  if (r?.success) { closeModal('portfolioModal'); loadPortfolio(); showAlert('alertPortfolio','success', id ? 'Project updated!' : 'Project added!'); }
-  else showAlert('alertPortfolio', 'error', r?.message || 'Error saving project');
+
+  // Rough size check before sending - catches oversized uploads early with a
+  // clear message instead of letting the request fail on the server.
+  const approxBytes = new Blob([JSON.stringify(data)]).size;
+  if (approxBytes > 19 * 1024 * 1024) {
+    showAlert('alertPortfolio', 'error', 'Your images are too large in total (over ~19MB). Remove a screenshot or use image URLs (Cloudinary, Imgur, etc.) instead of uploading files.');
+    return;
+  }
+
+  const saveBtn = document.getElementById('portfolioSaveBtn');
+  const saveBtnLabel = saveBtn?.innerHTML;
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+
+  try {
+    const r = id ? await api('PUT', '/admin/portfolio/' + id, data) : await api('POST', '/admin/portfolio', data);
+    if (r?.success) { closeModal('portfolioModal'); loadPortfolio(); showAlert('alertPortfolio','success', id ? 'Project updated!' : 'Project added!'); }
+    else showAlert('alertPortfolio', 'error', r?.message || 'Error saving project. Please try again.');
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = saveBtnLabel; }
+  }
 }
 
 // ── TESTIMONIALS ──────────────────────────────
