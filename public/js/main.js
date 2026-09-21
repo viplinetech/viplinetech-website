@@ -355,6 +355,9 @@ async function loadPortfolio() {
 
     grid.innerHTML = items.map((item, i) => `
       <a class="portfolio-item" href="/portfolio/${encodeURIComponent(item.slug || item.id)}" data-category="${item.category.toLowerCase()}" data-aos="fade-up" data-aos-delay="${(i%3)*100}">
+        <svg class="pf-beam-svg" preserveAspectRatio="none" viewBox="0 0 100 100" aria-hidden="true">
+          <rect x="0.5" y="0.5" width="99" height="99" rx="4" ry="4" />
+        </svg>
         <div class="portfolio-thumb">
           ${item.image_url
             ? `<div class="portfolio-real-img" role="img" aria-label="${item.title.replace(/"/g,'&quot;')}" style="background-image:url('${item.image_url}')"></div>`

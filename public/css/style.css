@@ -2,17 +2,6 @@
    VIPLINE TECHNOLOGIES - WORLD CLASS CSS
    ══════════════════════════════════════════════ */
 
-/* Registered so browsers can smoothly animate the conic-gradient angle used
-   by the portfolio card's traveling border light (.portfolio-item::after).
-   Rotating the gradient's angle (rather than the masked shape itself) keeps
-   the light ring perfectly aligned to the card's rounded-rectangle edge
-   throughout the sweep. */
-@property --pf-beam-angle {
-  syntax: '<angle>';
-  inherits: false;
-  initial-value: 0deg;
-}
-
 /* ── DESIGN TOKENS ─────────────────────────── */
 :root {
   /* Dark Mode (default) */
@@ -47,12 +36,6 @@
   --pf-card-shadow-hover: 0 20px 44px -16px rgba(0,20,60,0.85), 0 0 0 1px rgba(0,212,255,0.1) inset;
   --pf-beam-color: #0066FF;
   --pf-beam-bright: #7FE8FF;
-  /* Reusable animated-border ring for buttons (see the .btn-* rules below).
-     Resolves against whichever --pf-beam-* values the active theme sets. */
-  --pf-btn-ring: conic-gradient(from var(--pf-beam-angle, 0deg),
-    transparent 0deg, transparent 265deg,
-    var(--pf-beam-color) 300deg, var(--pf-beam-bright) 328deg, var(--pf-beam-color) 356deg,
-    transparent 360deg);
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -348,11 +331,7 @@ select, input, textarea { font-family: inherit; }
 
 .btn-nav-cta {
   padding: 8px 20px;
-  border: 2px solid transparent;
-  background-image: var(--gradient-main), var(--pf-btn-ring);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  animation: pf-beam-spin 5s linear infinite;
+  background: var(--gradient-main);
   color: #fff;
   border-radius: 8px;
   font-size: 0.85rem;
@@ -402,19 +381,10 @@ select, input, textarea { font-family: inherit; }
 .mt-2 { margin-top: 8px; }
 
 /* ── BUTTONS ────────────────────────────────── */
-/* All four button styles share the same animated-border ring, built with
-   background-clip (padding-box for the fill + border-box for the rotating
-   gradient) rather than masks or z-index layering - so it renders the same
-   way whether the button is filled (primary/nav-cta) or transparent
-   (ghost/outline), in both themes. */
 .btn-primary {
   display: inline-flex; align-items: center; gap: 10px;
   padding: 14px 28px;
-  border: 2px solid transparent;
-  background-image: var(--gradient-main), var(--pf-btn-ring);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  animation: pf-beam-spin 5s linear infinite;
+  background: var(--gradient-main);
   color: #fff;
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
@@ -432,32 +402,27 @@ select, input, textarea { font-family: inherit; }
 .btn-ghost {
   display: inline-flex; align-items: center; gap: 10px;
   padding: 14px 28px;
-  border: 2px solid transparent;
-  background-image: linear-gradient(transparent, transparent), var(--pf-btn-ring);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  animation: pf-beam-spin 5s linear infinite;
+  background: transparent;
   color: var(--text-primary);
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   font-weight: 600;
-  transition: background var(--transition), transform var(--transition);
+  transition: border-color var(--transition), background var(--transition), transform var(--transition);
   cursor: none;
 }
 .btn-ghost:hover {
-  background-image: linear-gradient(rgba(0,212,255,0.08), rgba(0,212,255,0.08)), var(--pf-btn-ring);
+  border-color: var(--accent-cyan);
+  background: rgba(0,212,255,0.06);
   transform: translateY(-2px);
 }
 
 .btn-outline {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 24px;
-  border: 2px solid transparent;
-  background-image: linear-gradient(transparent, transparent), var(--pf-btn-ring);
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  animation: pf-beam-spin 5s linear infinite;
+  background: transparent;
   color: var(--accent-cyan);
+  border: 1.5px solid var(--accent-cyan);
   border-radius: var(--radius-sm);
   font-size: 0.875rem;
   font-weight: 600;
@@ -1114,31 +1079,32 @@ select, input, textarea { font-family: inherit; }
 }
 .portfolio-item.hidden { display: none; }
 
-/* Traveling light animation around the card border - a rotating gradient
-   sits just behind the card (z-index: -1), overhanging its edge by a few
-   pixels. The card's own solid background covers the center, so only a
-   thin ring around the perimeter is visible: a bright arc of brand blue
-   continuously sweeping around the frame. No mask/composite required, so
-   it renders consistently across browsers. */
-.portfolio-item::after {
-  content: '';
+/* Traveling light animation around the card border - a real SVG rectangle
+   traced with a short dashed segment whose stroke-dashoffset is animated,
+   so a bright arc of brand blue continuously chases around the actual
+   rectangle path. stroke-dashoffset is a plain, universally-supported
+   animatable property (no masks, no conic-gradient, no @property/custom
+   property interpolation involved), so it always visibly moves. */
+.pf-beam-svg {
   position: absolute;
-  inset: -3px;
-  z-index: -1;
-  border-radius: calc(var(--radius-lg) + 3px);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
   pointer-events: none;
-  background: conic-gradient(from var(--pf-beam-angle, 0deg),
-    transparent 0deg,
-    transparent 265deg,
-    var(--pf-beam-color) 300deg,
-    var(--pf-beam-bright) 328deg,
-    var(--pf-beam-color) 356deg,
-    transparent 360deg);
-  animation: pf-beam-spin 5s linear infinite;
+  overflow: visible;
 }
-@keyframes pf-beam-spin {
-  from { --pf-beam-angle: 0deg; }
-  to   { --pf-beam-angle: 360deg; }
+.pf-beam-svg rect {
+  fill: none;
+  stroke: var(--pf-beam-color);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 40 356;
+  filter: drop-shadow(0 0 3px var(--pf-beam-bright));
+  animation: pf-dash 4s linear infinite;
+}
+@keyframes pf-dash {
+  to { stroke-dashoffset: -396; }
 }
 
 .portfolio-thumb {
