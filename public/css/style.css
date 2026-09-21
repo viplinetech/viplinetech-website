@@ -1874,12 +1874,16 @@ select, input, textarea { font-family: inherit; }
 }
 .captcha-error.hidden { display: none; }
 
-/* ── PORTFOLIO REAL IMAGE ────────────────────── */
+/* ── PORTFOLIO REAL IMAGE ──────────────────────
+   contain (not cover) so the full uploaded screenshot is always visible,
+   uncropped, at its real aspect ratio - any leftover space is filled with
+   a neutral backdrop instead of cutting off part of the image. ── */
 .portfolio-real-img {
   width: 100%;
   height: 100%;
   min-height: 240px;
-  background-size: cover;
+  background-color: var(--bg-secondary);
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   transition: transform var(--transition-slow);
