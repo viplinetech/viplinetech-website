@@ -441,7 +441,11 @@ select, input, textarea { font-family: inherit; }
    Same technique and colours as the portfolio card border light
    (see .pf-beam-svg above), but sized dynamically in JS to each button's
    real pixel dimensions (initButtonBeams() in main.js) since buttons vary
-   in width/height - a fixed viewBox would distort the rounded corners. */
+   in width/height - a fixed viewBox would distort the rounded corners.
+   The animation itself is driven by the Web Animations API in JS
+   (rect.animate(...)) rather than a CSS @keyframes reading a custom
+   property - that pattern did not animate reliably in the field, so this
+   avoids CSS custom-property interpolation entirely. */
 .pf-beam-btn-svg {
   position: absolute;
   inset: 0;
@@ -456,10 +460,6 @@ select, input, textarea { font-family: inherit; }
   stroke: var(--pf-beam-color);
   stroke-width: 1.5;
   filter: drop-shadow(0 0 3px var(--pf-beam-bright));
-  animation: pf-dash-btn 4s linear infinite;
-}
-@keyframes pf-dash-btn {
-  to { stroke-dashoffset: calc(var(--pf-btn-perimeter, 200) * -1); }
 }
 
 .btn-lg { padding: 16px 32px; font-size: 0.95rem; }

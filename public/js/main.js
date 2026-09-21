@@ -58,7 +58,14 @@ function initButtonBeams() {
     const perimeter = Math.max(1, Math.round(2 * (rw + rh)));
     const segment = Math.max(10, Math.round(perimeter * 0.16));
     rect.style.strokeDasharray = `${segment} ${perimeter - segment}`;
-    rect.style.setProperty('--pf-btn-perimeter', perimeter);
+
+    // Drive the sweep directly via the Web Animations API (not a CSS
+    // @keyframes reading a custom property) so it always animates.
+    rect._pfBeamAnim?.cancel();
+    rect._pfBeamAnim = rect.animate(
+      [{ strokeDashoffset: 0 }, { strokeDashoffset: -perimeter }],
+      { duration: 4000, iterations: Infinity, easing: 'linear' }
+    );
   });
 }
 let _pfBeamResizeT;
