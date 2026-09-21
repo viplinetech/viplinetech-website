@@ -27,6 +27,13 @@
   --shadow-lg: 0 20px 60px rgba(0,0,0,0.6);
   --nav-bg: rgba(5,10,20,0.85);
   --footer-bg: #030710;
+  /* Portfolio card frame - deliberately stronger than --border/--bg-card so
+     the card reads as a distinct object against the page, not just a tint */
+  --pf-card-bg: #111B30;
+  --pf-card-border: rgba(255,255,255,0.14);
+  --pf-card-border-hover: rgba(0,212,255,0.55);
+  --pf-card-shadow: 0 10px 28px -14px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.02) inset;
+  --pf-card-shadow-hover: 0 20px 44px -16px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,212,255,0.06) inset;
   --radius-sm: 8px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -51,6 +58,11 @@
   --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
   --nav-bg: rgba(248,250,255,0.9);
   --footer-bg: #0A0E1A;
+  --pf-card-bg: #FFFFFF;
+  --pf-card-border: rgba(10,20,45,0.12);
+  --pf-card-border-hover: rgba(0,102,255,0.5);
+  --pf-card-shadow: 0 10px 28px -16px rgba(10,20,45,0.22), 0 0 0 1px rgba(10,20,45,0.03) inset;
+  --pf-card-shadow-hover: 0 22px 44px -18px rgba(10,20,45,0.28), 0 0 0 1px rgba(0,102,255,0.05) inset;
 }
 
 /* ── RESET & BASE ───────────────────────────── */
@@ -1048,16 +1060,17 @@ select, input, textarea { font-family: inherit; }
 .portfolio-item {
   display: flex;
   flex-direction: column;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
+  background: var(--pf-card-bg);
+  border: 1px solid var(--pf-card-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--pf-card-shadow);
   transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
 }
 .portfolio-item:hover {
   transform: translateY(-6px);
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-card);
+  border-color: var(--pf-card-border-hover);
+  box-shadow: var(--pf-card-shadow-hover);
 }
 .portfolio-item.hidden { display: none; }
 
@@ -1066,7 +1079,7 @@ select, input, textarea { font-family: inherit; }
   aspect-ratio: 4/3;
   overflow: hidden;
   background: var(--bg-secondary);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--pf-card-border);
 }
 .portfolio-placeholder {
   width: 100%; height: 100%;
