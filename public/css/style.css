@@ -400,6 +400,7 @@ select, input, textarea { font-family: inherit; }
 .btn-primary:active { transform: translateY(0); }
 
 .btn-ghost {
+  position: relative;
   display: inline-flex; align-items: center; gap: 10px;
   padding: 14px 28px;
   background: transparent;
@@ -418,6 +419,7 @@ select, input, textarea { font-family: inherit; }
 }
 
 .btn-outline {
+  position: relative;
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 24px;
   background: transparent;
@@ -433,6 +435,31 @@ select, input, textarea { font-family: inherit; }
   background: var(--accent-cyan);
   color: var(--bg-primary);
   transform: translateY(-2px);
+}
+
+/* ── ANIMATED BORDER (unfilled buttons only) ───
+   Same technique and colours as the portfolio card border light
+   (see .pf-beam-svg above), but sized dynamically in JS to each button's
+   real pixel dimensions (initButtonBeams() in main.js) since buttons vary
+   in width/height - a fixed viewBox would distort the rounded corners. */
+.pf-beam-btn-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+.pf-beam-btn-svg rect {
+  fill: none;
+  stroke: var(--pf-beam-color);
+  stroke-width: 1.5;
+  filter: drop-shadow(0 0 3px var(--pf-beam-bright));
+  animation: pf-dash-btn 4s linear infinite;
+}
+@keyframes pf-dash-btn {
+  to { stroke-dashoffset: calc(var(--pf-btn-perimeter, 200) * -1); }
 }
 
 .btn-lg { padding: 16px 32px; font-size: 0.95rem; }

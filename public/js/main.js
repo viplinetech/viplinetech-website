@@ -17,9 +17,54 @@ window.addEventListener('load', () => {
       document.getElementById('preloader')?.classList.add('hidden');
       initCanvas();
       startCounters();
+      initButtonBeams();
       AOS.refresh();
     }, 2200);
   });
+});
+
+// ── ANIMATED BORDER FOR UNFILLED BUTTONS (.btn-ghost, .btn-outline) ──
+// Same traveling-light effect and colours as the portfolio card border,
+// but since buttons vary in width/height an SVG is sized in real pixels
+// per button (not a fixed 0-100 viewBox) so rounded corners never distort.
+function initButtonBeams() {
+  document.querySelectorAll('.btn-ghost, .btn-outline').forEach(btn => {
+    const w = btn.offsetWidth, h = btn.offsetHeight;
+    if (!w || !h) return;
+
+    let svg = btn.querySelector(':scope > svg.pf-beam-btn-svg');
+    let rect;
+    if (!svg) {
+      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'pf-beam-btn-svg');
+      svg.setAttribute('aria-hidden', 'true');
+      rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      svg.appendChild(rect);
+      btn.insertBefore(svg, btn.firstChild);
+    } else {
+      rect = svg.querySelector('rect');
+    }
+
+    const radius = parseFloat(getComputedStyle(btn).borderRadius) || 8;
+    const rw = Math.max(0, w - 1.5), rh = Math.max(0, h - 1.5);
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    rect.setAttribute('x', 0.75);
+    rect.setAttribute('y', 0.75);
+    rect.setAttribute('width', rw);
+    rect.setAttribute('height', rh);
+    rect.setAttribute('rx', Math.min(radius, rh / 2));
+    rect.setAttribute('ry', Math.min(radius, rh / 2));
+
+    const perimeter = Math.max(1, Math.round(2 * (rw + rh)));
+    const segment = Math.max(10, Math.round(perimeter * 0.16));
+    rect.style.strokeDasharray = `${segment} ${perimeter - segment}`;
+    rect.style.setProperty('--pf-btn-perimeter', perimeter);
+  });
+}
+let _pfBeamResizeT;
+window.addEventListener('resize', () => {
+  clearTimeout(_pfBeamResizeT);
+  _pfBeamResizeT = setTimeout(initButtonBeams, 200);
 });
 
 // ── LOAD ALL FROM DB ──────────────────────────
