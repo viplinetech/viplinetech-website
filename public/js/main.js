@@ -354,19 +354,18 @@ async function loadPortfolio() {
     pfItems = items;
 
     grid.innerHTML = items.map((item, i) => `
-      <a class="portfolio-item" href="/portfolio/${encodeURIComponent(item.slug || item.id)}" data-category="${item.category.toLowerCase()}" data-aos="fade-up" data-aos-delay="${(i%3)*100}" style="cursor:pointer">
+      <a class="portfolio-item" href="/portfolio/${encodeURIComponent(item.slug || item.id)}" data-category="${item.category.toLowerCase()}" data-aos="fade-up" data-aos-delay="${(i%3)*100}">
         <div class="portfolio-thumb">
           ${item.image_url
             ? `<div class="portfolio-real-img" role="img" aria-label="${item.title.replace(/"/g,'&quot;')}" style="background-image:url('${item.image_url}')"></div>`
             : `<div class="portfolio-placeholder ${bgClasses[i % bgClasses.length]}"><i class="${icons[i % icons.length]}"></i></div>`
           }
-          <div class="portfolio-overlay">
-            <div class="portfolio-overlay-content">
-              <span class="portfolio-cat">${esc(item.category)}</span>
-              <h4>${esc(item.title)}</h4>
-              <p class="pf-click-hint"><i class="fas fa-expand-alt"></i> View project</p>
-            </div>
-          </div>
+          <span class="portfolio-cat-chip">${esc(item.category)}</span>
+        </div>
+        <div class="portfolio-body">
+          <h4>${esc(item.title)}</h4>
+          <p class="portfolio-desc">${esc(item.description || '')}</p>
+          <span class="portfolio-view">View Project <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
         </div>
       </a>`).join('');
   } catch(e) { console.warn('Portfolio load failed:', e); }
