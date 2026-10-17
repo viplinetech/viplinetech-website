@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>World Air Traffic Controllers' Day 2026 | NATCA Port Harcourt Branch</title>
+<meta name="description" content="Official programme of events — World Air Traffic Controllers' Day 2026, Nigerian Air Traffic Controllers Association, Port Harcourt Branch. Monday, 20th October 2026, Port Harcourt International Airport." />
+<meta name="robots" content="index, follow" />
+<meta property="og:title" content="World Air Traffic Controllers' Day 2026 | NATCA Port Harcourt" />
+<meta property="og:description" content="Behind Every Safe Flight is a Dedicated Air Traffic Controller. Official programme — 20th October 2026, Port Harcourt International Airport." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://viplinetech.com/natca-ph-programme.html" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+  /* ══════════════════════ TOKENS ══════════════════════ */
+  :root {
+    --navy:  #0A1225;
+    --navy2: #101D36;
+    --gold:  #C8A94A;
+    --gold2: #E5CA81;
+    --cream: #FCF9F5;
+    --white: #FFFFFF;
+    --nav-h: 64px;
+  }
+
+  * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-h) + 10px); }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img, svg { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+
+  /* ══════════════════════ STICKY NAV ══════════════════════ */
+  .site-nav {
+    position: sticky; top: 0; z-index: 500;
+    height: var(--nav-h);
+    background: linear-gradient(180deg, var(--navy) 0%, var(--navy2) 100%);
+    border-bottom: 1px solid rgba(200,169,74,0.35);
+    display: flex; align-items: center;
+  }
+  .nav-inner {
+    width: 100%; max-width: 1100px; margin: 0 auto;
+    padding: 0 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+  .nav-brand .natca-logo { width: 48px; height: 48px; }
+  .nav-brand-text {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    color: var(--gold2);
+    white-space: nowrap;
+  }
+  .nav-tabs {
+    display: flex; gap: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tabs a {
+    flex: 0 0 auto;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(252,249,245,0.68);
+    padding: 8px 12px;
+    border-radius: 99px;
+    border: 1px solid transparent;
+    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    white-space: nowrap;
+  }
+  .nav-tabs a:hover { color: var(--gold2); }
+  .nav-tabs a.active {
+    color: var(--navy);
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  /* ══════════════════════ HERO ══════════════════════ */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    background: radial-gradient(120% 90% at 50% 0%, var(--navy2) 0%, var(--navy) 65%);
+    padding: 70px 20px 60px;
+  }
+  /* CSS-only radar sweep */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 1400px; height: 1400px;
+    margin: -700px 0 0 -700px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgba(200,169,74,0.16) 18deg,
+      rgba(200,169,74,0.04) 40deg,
+      transparent 70deg,
+      transparent 360deg
+    );
+    border-radius: 50%;
+    animation: radarSpin 14s linear infinite;
+    opacity: 0.8;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      repeating-radial-gradient(circle at 50% 42%, rgba(200,169,74,0.05) 0, rgba(200,169,74,0.05) 1px, transparent 2px, transparent 90px);
+    pointer-events: none;
+  }
+  @keyframes radarSpin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .hero::before { animation: none; }
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 720px; }
+  .hero .natca-logo { width: 100px; height: 100px; margin: 0 auto 28px; }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold2);
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: clamp(1.9rem, 5.4vw, 3.3rem);
+    line-height: 1.18;
+    color: var(--gold);
+    text-shadow: 0 2px 24px rgba(200,169,74,0.25);
+    margin-bottom: 20px;
+  }
+  .hero-subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.92rem, 2.2vw, 1.08rem);
+    color: var(--cream);
+    opacity: 0.92;
+    letter-spacing: 0.01em;
+    margin-bottom: 30px;
+  }
+  .hero-subtitle .sep { color: var(--gold); margin: 0 10px; }
+
+  .hero-quote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(1rem, 2.6vw, 1.3rem);
+    color: var(--gold2);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.5;
+    position: relative;
+    padding: 0 10px;
+  }
+
+  .hero-qr {
+    display: inline-flex; flex-direction: column; align-items: center;
+    gap: 10px;
+    margin-bottom: 44px;
+  }
+  .hero-qr-box {
+    background: var(--white);
+    border: 2px solid var(--gold);
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+  .hero-qr-box #qrcode { width: 80px; height: 80px; line-height: 0; }
+  .hero-qr-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(252,249,245,0.75);
+  }
+
+  .scroll-chevron {
+    position: absolute;
+    left: 50%; bottom: 28px;
+    transform: translateX(-50%);
+    width: 22px; height: 22px;
+    border-right: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    transform: translateX(-50%) rotate(45deg);
+    animation: chevronBounce 2.2s ease-in-out infinite;
+    opacity: 0.85;
+  }
+  @keyframes chevronBounce {
+    0%, 100% { margin-top: 0; opacity: 0.5; }
+    50% { margin-top: 10px; opacity: 1; }
+  }
+
+  /* ══════════════════════ PROGRAMME ══════════════════════ */
+  .programme {
+    max-width: 860px;
+    margin: -46px auto 80px;
+    padding: 0 16px;
+    position: relative;
+    z-index: 3;
+  }
+  .programme-card {
+    background: var(--cream);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(10,18,37,0.18), 0 2px 0 rgba(200,169,74,0.4);
+    overflow: hidden;
+  }
+  .section-band {
+    background: linear-gradient(180deg, var(--navy2) 0%, var(--navy) 100%);
+    padding: 18px 20px;
+    text-align: center;
+    border-bottom: 2px solid var(--gold);
+  }
+  .section-band h2 {
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: clamp(0.95rem, 2.4vw, 1.2rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .prog-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px 16px 16px;
+    border-left: 4px solid var(--gold);
+    border-bottom: 1px solid rgba(10,18,37,0.06);
+    transition: background 0.25s ease;
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .prog-row.in-view {
+    animation: rowFadeUp 0.55s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+  @keyframes rowFadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .prog-row:nth-child(odd)  { background: #FCF9F5; }
+  .prog-row:nth-child(even) { background: #FFFFFF; }
+  .prog-row:hover { background: rgba(200,169,74,0.10); }
+  .prog-row:last-child { border-bottom: none; }
+
+  .prog-num {
+    flex: 0 0 64px;
+    width: 64px;
+    text-align: right;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--gold);
+  }
+  .prog-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prog-row { opacity: 1; transform: none; animation: none; }
+  }
+
+  /* ══════════════════════ BACK TO TOP ══════════════════════ */
+  .back-to-top {
+    position: fixed;
+    right: 20px; bottom: 20px;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 1.2rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 26px rgba(0,0,0,0.3);
+    opacity: 0; visibility: hidden; transform: translateY(12px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 400;
+  }
+  .back-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+  .back-to-top:hover { background: var(--gold2); }
+
+  /* ══════════════════════ FOOTER ══════════════════════ */
+  .site-footer {
+    background: var(--navy);
+    color: var(--cream);
+    text-align: center;
+    padding: 56px 20px 40px;
+  }
+  .site-footer .natca-logo { width: 60px; height: 60px; margin: 0 auto 20px; }
+  .footer-line1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--gold2);
+    margin-bottom: 8px;
+  }
+  .footer-line2, .footer-line3 {
+    font-size: 0.85rem;
+    color: rgba(252,249,245,0.72);
+    margin-bottom: 4px;
+  }
+  .footer-rule {
+    width: 80px; height: 1px;
+    background: var(--gold);
+    margin: 24px auto;
+    opacity: 0.6;
+  }
+  .footer-copy {
+    font-size: 0.75rem;
+    color: rgba(252,249,245,0.5);
+    letter-spacing: 0.02em;
+  }
+
+  /* ══════════════════════ PRINT ══════════════════════ */
+  @media print {
+    * { color: #000 !important; background: #fff !important; box-shadow: none !important; text-shadow: none !important; }
+    .site-nav, .hero, .back-to-top, .site-footer { display: none !important; }
+    body { background: #fff !important; }
+    .programme { margin: 0 auto; max-width: 100%; padding: 0; }
+    .programme-card { box-shadow: none !important; border-radius: 0; }
+    .section-band {
+      background: #000 !important;
+      border-bottom: 2px solid #000 !important;
+      page-break-before: always;
+      break-before: page;
+    }
+    .section-band:first-child { page-break-before: avoid; break-before: avoid; }
+    .section-band h2 { color: #fff !important; }
+    .prog-row {
+      opacity: 1 !important; transform: none !important; animation: none !important;
+      border-left: 3px solid #000 !important;
+      border-bottom: 1px solid #ccc !important;
+      page-break-inside: avoid; break-inside: avoid;
+    }
+    .prog-num { font-weight: 700; }
+    .prog-title { color: #000 !important; }
+    @page { size: A4; margin: 14mm; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ STICKY NAV ══════════════════════ -->
+<nav class="site-nav" aria-label="Programme sections">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <svg class="natca-logo" viewBox="0 0 200 200" aria-hidden="true">
+        <use href="#natca-logo-art"></use>
+      </svg>
+      <span class="nav-brand-text">NATCA PH 2026</span>
+    </div>
+    <div class="nav-tabs" id="navTabs">
+      <a href="#ceremony" data-nav>Official Ceremony</a>
+      <a href="#commissioning" data-nav>Commissioning</a>
+      <a href="#celebration" data-nav>Celebration</a>
+      <a href="#gameshow" data-nav>Game Show</a>
+      <a href="#entertainment" data-nav>Entertainment</a>
+      <a href="#closing" data-nav>Closing</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════ HERO ══════════════════════ -->
+<header class="hero">
+  <div class="hero-content">
+    <svg class="natca-logo" viewBox="0 0 200 200" role="img" aria-label="NATCA emblem">
+      <use href="#natca-logo-art"></use>
+    </svg>
+    <p class="hero-eyebrow">Nigerian Air Traffic Controllers Association &mdash; Port Harcourt Branch</p>
+    <h1>World Air Traffic<br>Controllers&rsquo; Day 2026</h1>
+    <p class="hero-subtitle">20th October 2026<span class="sep">&#9670;</span>Port Harcourt International Airport</p>
+    <p class="hero-quote">&ldquo;Behind Every Safe Flight is a Dedicated Air Traffic Controller&rdquo;</p>
+
+    <div class="hero-qr">
+      <div class="hero-qr-box">
+        <div id="qrcode" aria-hidden="true"></div>
+      </div>
+      <span class="hero-qr-label">Share this Programme</span>
+    </div>
+  </div>
+  <span class="scroll-chevron" aria-hidden="true"></span>
+</header>
+
+<!-- ══════════════════════ PROGRAMME ══════════════════════ -->
+<main class="programme">
+  <div class="programme-card">
+
+    <section id="ceremony" aria-labelledby="h-ceremony">
+      <div class="section-band"><h2 id="h-ceremony">Official Ceremony</h2></div>
+      <div class="prog-row"><div class="prog-num">I</div><div class="prog-title">Reception of Guests</div></div>
+      <div class="prog-row"><div class="prog-num">II</div><div class="prog-title">Cultural Dance &mdash; Entrance Performance</div></div>
+      <div class="prog-row"><div class="prog-num">III</div><div class="prog-title">Opening Prayer</div></div>
+      <div class="prog-row"><div class="prog-num">IV</div><div class="prog-title">Nigerian National Anthem</div></div>
+      <div class="prog-row"><div class="prog-num">V</div><div class="prog-title">Introduction of Dignitaries</div></div>
+      <div class="prog-row"><div class="prog-num">VI</div><div class="prog-title">Welcome Address by the NATCA President</div></div>
+      <div class="prog-row"><div class="prog-num">VII</div><div class="prog-title">Brief History &amp; Significance of World Air Traffic Controllers&rsquo; Day by QAM PH</div></div>
+      <div class="prog-row"><div class="prog-num">VIII</div><div class="prog-title">Goodwill Messages from Invited Guests &amp; Stakeholders</div></div>
+    </section>
+
+    <section id="commissioning" aria-labelledby="h-commissioning">
+      <div class="section-band"><h2 id="h-commissioning">Commissioning Ceremony</h2></div>
+      <div class="prog-row"><div class="prog-num">IX</div><div class="prog-title">Official Commissioning of NATCA Guest House</div></div>
+      <div class="prog-row"><div class="prog-num">X</div><div class="prog-title">Inspection Tour of the Guest House</div></div>
+      <div class="prog-row"><div class="prog-num">XI</div><div class="prog-title">Group Photograph</div></div>
+      <div class="prog-row"><div class="prog-num">XII</div><div class="prog-title">Launching Ceremony</div></div>
+    </section>
+
+    <section id="celebration" aria-labelledby="h-celebration">
+      <div class="section-band"><h2 id="h-celebration">Celebration</h2></div>
+      <div class="prog-row"><div class="prog-num">XIII</div><div class="prog-title">Cake Cutting Ceremony</div></div>
+      <div class="prog-row"><div class="prog-num">XIV</div><div class="prog-title">Cultural Dance &mdash; Main Stage Performance</div></div>
+      <div class="prog-row"><div class="prog-num">XV</div><div class="prog-title">Lunch</div></div>
+    </section>
+
+    <section id="gameshow" aria-labelledby="h-gameshow">
+      <div class="section-band"><h2 id="h-gameshow">NATCA Game Show</h2></div>
+      <div class="prog-row"><div class="prog-num">XVI</div><div class="prog-title">Table QR Code Registration</div></div>
+      <div class="prog-row"><div class="prog-num">XVII</div><div class="prog-title">Game 1 &mdash; Aviation Trivia (3 Rounds)</div></div>
+      <div class="prog-row"><div class="prog-num">XVIII</div><div class="prog-title">Game 2 &mdash; Who Knows NATCA Best?</div></div>
+      <div class="prog-row"><div class="prog-num">XIX</div><div class="prog-title">Game 3 &mdash; Nigerian Aviation Flash Round</div></div>
+      <div class="prog-row"><div class="prog-num">XX</div><div class="prog-title">Grand Champion Announcement &amp; Prize Presentation</div></div>
+    </section>
+
+    <section id="entertainment" aria-labelledby="h-entertainment">
+      <div class="section-band"><h2 id="h-entertainment">Entertainment</h2></div>
+      <div class="prog-row"><div class="prog-num">XXI</div><div class="prog-title">Dance-Off &mdash; Best ATC Moves</div></div>
+      <div class="prog-row"><div class="prog-num">XXII</div><div class="prog-title">Balloon Pop Lucky Dip</div></div>
+      <div class="prog-row"><div class="prog-num">XXIII</div><div class="prog-title">Find Your Runway Partner</div></div>
+      <div class="prog-row"><div class="prog-num">XXIV</div><div class="prog-title">Open Dance Floor</div></div>
+    </section>
+
+    <section id="closing" aria-labelledby="h-closing">
+      <div class="section-band"><h2 id="h-closing">Closing</h2></div>
+      <div class="prog-row"><div class="prog-num">XXV</div><div class="prog-title">Vote of Thanks</div></div>
+      <div class="prog-row"><div class="prog-num">XXVI</div><div class="prog-title">Closing Prayer</div></div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ══════════════════════ BACK TO TOP ══════════════════════ -->
+<button class="back-to-top" id="backToTop" aria-label="Back to top">&uarr;</button>
+
+<!-- ══════════════════════ FOOTER ══════════════════════ -->
+<footer class="site-footer">
+  <svg class="natca-logo" viewBox="0 0 200 200" aria-hidden="true">
+    <use href="#natca-logo-art"></use>
+  </svg>
+  <p class="footer-line1">Nigerian Air Traffic Controllers Association &mdash; Port Harcourt Branch</p>
+  <p class="footer-line2">World Air Traffic Controllers&rsquo; Day &nbsp;|&nbsp; 20th October 2026</p>
+  <p class="footer-line3">Port Harcourt International Airport, Rivers State, Nigeria</p>
+  <div class="footer-rule" aria-hidden="true"></div>
+  <p class="footer-copy">&copy; 2026 NATCA Port Harcourt Branch. All rights reserved.</p>
+</footer>
+
+<!-- ══════════════════════ NATCA LOGO (defined once, reused via <use>) ══════════════════════ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="natca-logo-art">
+      <path id="ringTextPath" d="M34,104 A70,70 0 1,1 166,104" fill="none"></path>
+
+      <circle cx="100" cy="100" r="96" fill="#0A1225"></circle>
+      <circle cx="100" cy="100" r="96" fill="none" stroke="#C8A94A" stroke-width="4"></circle>
+      <circle cx="100" cy="100" r="88" fill="none" stroke="#C8A94A" stroke-width="1" opacity="0.5"></circle>
+
+      <!-- radar arcs -->
+      <g opacity="0.35" stroke="#C8A94A" fill="none" stroke-width="1">
+        <circle cx="100" cy="112" r="20"></circle>
+        <circle cx="100" cy="112" r="34"></circle>
+        <circle cx="100" cy="112" r="48"></circle>
+      </g>
+
+      <!-- curved top text -->
+      <text font-family="Cinzel, serif" font-size="10.3" font-weight="600" fill="#C8A94A" letter-spacing="1">
+        <textPath href="#ringTextPath" startOffset="50%" text-anchor="middle">NIGERIAN AIR TRAFFIC CONTROLLERS ASSOCIATION</textPath>
+      </text>
+
+      <!-- small aircraft silhouette -->
+      <path d="M100,78 l3,10 16,9 0,4 -16,-3 0,10 6,5 0,3 -9,-2 -9,2 0,-3 6,-5 0,-10 -16,3 0,-4 16,-9 z"
+            fill="#C8A94A" opacity="0.9"></path>
+
+      <!-- centre wordmark -->
+      <text x="100" y="128" text-anchor="middle" font-family="Cinzel, serif" font-weight="700"
+            font-size="30" fill="#C8A94A" letter-spacing="2">NATCA</text>
+
+      <!-- bottom motifs -->
+      <g fill="#C8A94A">
+        <path d="M74,150 l1.6,3.3 3.6,.5 -2.6,2.6 .6,3.6 -3.2,-1.7 -3.2,1.7 .6,-3.6 -2.6,-2.6 3.6,-.5 z"></path>
+        <path d="M100,154 l2,4.1 4.5,.6 -3.3,3.2 .8,4.5 -4,-2.1 -4,2.1 .8,-4.5 -3.3,-3.2 4.5,-.6 z"></path>
+        <path d="M126,150 l1.6,3.3 3.6,.5 -2.6,2.6 .6,3.6 -3.2,-1.7 -3.2,1.7 .6,-3.6 -2.6,-2.6 3.6,-.5 z"></path>
+      </g>
+    </g>
+  </defs>
+</svg>
+
+<script>
+(function () {
+  'use strict';
+
+  // ── QR CODE ──
+  try {
+    if (window.QRCode) {
+      new QRCode(document.getElementById('qrcode'), {
+        text: 'https://viplinetech.com/natca-ph-programme.html',
+        width: 80,
+        height: 80,
+        colorDark: '#0A1225',
+        colorLight: '#FFFFFF',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+  } catch (e) { /* QR is decorative; fail silently */ }
+
+  // ── ACTIVE NAV TAB ON SCROLL ──
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll('.nav-tabs a[data-nav]'));
+  var sections = navLinks
+    .map(function (link) { return document.getElementById(link.getAttribute('href').slice(1)); })
+    .filter(Boolean);
+
+  function setActive(id) {
+    navLinks.forEach(function (link) {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+    });
+  }
+
+  if ('IntersectionObserver' in window && sections.length) {
+    var navObserver = new IntersectionObserver(function (entries) {
+      var visible = entries.filter(function (e) { return e.isIntersecting; });
+      if (visible.length) {
+        visible.sort(function (a, b) { return b.intersectionRatio - a.intersectionRatio; });
+        setActive(visible[0].target.id);
+      }
+    }, { rootMargin: '-35% 0px -55% 0px', threshold: [0, 0.25, 0.5, 0.75, 1] });
+    sections.forEach(function (s) { navObserver.observe(s); });
+  }
+
+  // ── STAGGERED ROW REVEAL ──
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.prog-row'));
+  if ('IntersectionObserver' in window && rows.length) {
+    var rowObserver = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var i = rows.indexOf(el);
+        var delay = Math.max(0, i) % 12 * 40; // stagger, reset per visible batch
+        el.style.animationDelay = delay + 'ms';
+        el.classList.add('in-view');
+        obs.unobserve(el);
+      });
+    }, { threshold: 0.15 });
+    rows.forEach(function (row) { rowObserver.observe(row); });
+  } else {
+    rows.forEach(function (row) { row.classList.add('in-view'); });
+  }
+
+  // ── BACK TO TOP ──
+  var backToTop = document.getElementById('backToTop');
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 300) backToTop.classList.add('visible');
+    else backToTop.classList.remove('visible');
+  }, { passive: true });
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
+</script>
+
+</body>
+</html>
