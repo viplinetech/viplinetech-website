@@ -74,7 +74,18 @@ async function renderIndex(req, res) {
   }
 }
 
-app.get('/', renderIndex);
+// ── SUBDOMAIN ROUTING ────────────────────────────
+// Hosts that should load the NATCA programme page at their root ("/")
+// instead of the ViplineTech homepage. Add the game show subdomain here
+// too once it's ready.
+const NATCA_PROGRAMME_HOSTS = ['programme.natcanigeria.org'];
+
+app.get('/', (req, res) => {
+  if (NATCA_PROGRAMME_HOSTS.includes(req.hostname)) {
+    return res.sendFile(path.join(__dirname, 'public', 'natca-ph-programme.html'));
+  }
+  return renderIndex(req, res);
+});
 
 // ── PORTFOLIO LISTING PAGE ──────────────────────
 app.get('/portfolio', (req, res) => {
