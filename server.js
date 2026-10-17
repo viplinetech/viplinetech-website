@@ -81,6 +81,11 @@ app.get('/portfolio', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'portfolio.html'));
 });
 
+// ── NATCA PROGRAMME PAGE (clean URL, no .html needed) ──
+app.get('/natca-ph-programme', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'natca-ph-programme.html'));
+});
+
 // ── PORTFOLIO PROJECT DETAIL PAGE (server-rendered for SEO) ──
 const detailTemplatePath = path.join(__dirname, 'public', 'portfolio-detail.html');
 
