@@ -86,6 +86,11 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    /* Without this, a flex child won't shrink below its content's natural
+       width, so overflow-x:auto never actually triggers - the tabs just
+       spill past the screen edge instead of scrolling. This lets it
+       shrink to fit, so the scroll area works as intended. */
+    min-width: 0;
   }
   .nav-tabs::-webkit-scrollbar { display: none; }
   .nav-tabs a {
