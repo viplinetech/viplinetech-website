@@ -218,18 +218,33 @@
       <i class="fas fa-chevron-right" aria-hidden="true"></i>
       <span>Portfolio</span>
     </nav>
-    <h1>Our <span class="gradient-text">Portfolio</span></h1>
-    <p>A complete showcase of the work we deliver: custom software, SaaS platforms, mobile apps, websites, and ecommerce for clients around the world.</p>
+    <h1 id="pfHeroTitle">Our <span class="gradient-text">Portfolio</span></h1>
+    <p id="pfHeroSub">A complete showcase of the work we deliver: custom software, SaaS platforms, mobile apps, websites, and ecommerce for clients around the world.</p>
   </div>
 </section>
+<script>
+  // Embed mode is shown inside a personal page (e.g. a freelancer's own
+  // /resume), so the company "we/our" voice reads as a mismatch there -
+  // swap to first-person framing in that context only.
+  if (document.documentElement.classList.contains('embed-mode')) {
+    var t = document.getElementById('pfHeroTitle');
+    var s = document.getElementById('pfHeroSub');
+    if (t) t.innerHTML = 'My <span class="gradient-text">Portfolio</span>';
+    if (s) s.textContent = 'A showcase of the work I deliver: custom software, SaaS platforms, mobile apps, websites, and ecommerce for clients around the world.';
+    var eyebrow = document.getElementById('pfWorkEyebrow');
+    var workSub = document.getElementById('pfWorkSub');
+    if (eyebrow) eyebrow.textContent = 'My Work';
+    if (workSub) workSub.textContent = 'Filter by category to explore projects in each of my service areas. Click any project to see the details.';
+  }
+</script>
 
 <!-- ═══════════════════════════ PORTFOLIO GRID ═══════════════════════════ -->
 <section id="portfolio" class="pf-page-section portfolio-section" aria-labelledby="portfolio-heading">
   <div class="container">
     <div class="section-header" data-aos="fade-up" style="margin-bottom:32px">
-      <div class="section-eyebrow">Our Work</div>
+      <div class="section-eyebrow" id="pfWorkEyebrow">Our Work</div>
       <h2 id="portfolio-heading" class="section-title">Projects &amp; <span class="gradient-text">Case Studies</span></h2>
-      <p class="section-sub">Filter by category to explore projects in each of our service areas. Click any project to see the details.</p>
+      <p class="section-sub" id="pfWorkSub">Filter by category to explore projects in each of our service areas. Click any project to see the details.</p>
     </div>
 
     <div class="portfolio-filters" data-aos="fade-up" data-aos-delay="100" role="group" aria-label="Filter portfolio by category">
