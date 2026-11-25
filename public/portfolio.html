@@ -68,6 +68,7 @@
     .embed-mode footer,
     .embed-mode .whatsapp-float,
     .embed-mode .back-to-top,
+    .embed-mode .pf-breadcrumb,
     .embed-mode #preloader {
       display: none !important;
     }
@@ -225,8 +226,12 @@
 <script>
   // Embed mode is shown inside a personal page (e.g. a freelancer's own
   // /resume), so the company "we/our" voice reads as a mismatch there -
-  // swap to first-person framing in that context only.
-  if (document.documentElement.classList.contains('embed-mode')) {
+  // swap to first-person framing in that context only. Runs on
+  // DOMContentLoaded (not inline at this point in the markup) since the
+  // "Our Work" section further down the page hasn't been parsed yet when
+  // this script tag itself executes.
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!document.documentElement.classList.contains('embed-mode')) return;
     var t = document.getElementById('pfHeroTitle');
     var s = document.getElementById('pfHeroSub');
     if (t) t.innerHTML = 'My <span class="gradient-text">Portfolio</span>';
@@ -235,7 +240,7 @@
     var workSub = document.getElementById('pfWorkSub');
     if (eyebrow) eyebrow.textContent = 'My Work';
     if (workSub) workSub.textContent = 'Filter by category to explore projects in each of my service areas. Click any project to see the details.';
-  }
+  });
 </script>
 
 <!-- ═══════════════════════════ PORTFOLIO GRID ═══════════════════════════ -->
