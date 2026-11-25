@@ -419,6 +419,7 @@ async function loadPortfolio() {
         </div>
         <div class="portfolio-body">
           <h4>${esc(item.title)}</h4>
+          <p class="portfolio-credit">Built by Ifeanyi Ofor · ViplineTech</p>
           <p class="portfolio-desc">${esc(item.description || '')}</p>
           <span class="portfolio-view">View Project <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
         </div>
