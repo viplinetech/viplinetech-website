@@ -8,6 +8,15 @@
     try {
       document.documentElement.setAttribute('data-theme', localStorage.getItem('vipline-theme') || 'dark');
     } catch (e) {}
+    // Embed mode (?embed=1): used when this page is shown inside an iframe
+    // elsewhere (e.g. the /me/resume portfolio modal) - hides the site chrome
+    // (nav, footer, WhatsApp float) so only the portfolio content itself shows,
+    // avoiding a "site within a site" look with duplicated navigation.
+    try {
+      if (/[?&]embed=1(&|$)/.test(location.search)) {
+        document.documentElement.classList.add('embed-mode');
+      }
+    } catch (e) {}
     // Prevent pinch-to-zoom on mobile
     document.addEventListener('touchmove', function(e) {
       if (e.touches.length > 1) e.preventDefault();
@@ -54,6 +63,15 @@
   <link rel="stylesheet" href="css/style.css" />
 
   <style>
+    /* ── Embed mode: hide site chrome when shown inside an iframe ── */
+    .embed-mode header,
+    .embed-mode footer,
+    .embed-mode .whatsapp-float,
+    .embed-mode .back-to-top {
+      display: none !important;
+    }
+    .embed-mode .pf-page-hero { padding-top: 48px; }
+
     /* ── PORTFOLIO PAGE HERO ── */
     .pf-page-hero {
       position: relative;
